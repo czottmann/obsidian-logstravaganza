@@ -1,7 +1,7 @@
 import { Plugin, TAbstractFile, TFile } from "obsidian";
 
 const ORIGINALS: { [key: string]: Function } = {};
-const COLORS = {
+const COLORS: { [key: string]: string } = {
   "log": "⬜️",
   "error": "🟥",
   "info": "🟦",
@@ -28,10 +28,11 @@ async function getNoteFile() {
 }
 
 function installProxies() {
-  "debug error info log warn".split(" ").forEach((level) => {
-    ORIGINALS[level] = window.console[level];
+  Object.keys(COLORS).forEach((level) => {
+    const console = <any> window.console;
+    ORIGINALS[level] = console[level];
 
-    window.console[level] = (...args) => {
+    console[level] = (...args: any[]) => {
       ORIGINALS[level](...args);
       appendToNote(level, ...args);
     };
@@ -41,7 +42,7 @@ function installProxies() {
 
 function removeProxies() {
   Object.keys(ORIGINALS).forEach((level) => {
-    window.console[level] = ORIGINALS[level];
+    (<any> window.console)[level] = ORIGINALS[level];
   });
   console.log("Proxies removed");
 }
