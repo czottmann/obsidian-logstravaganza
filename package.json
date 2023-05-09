@@ -1,6 +1,6 @@
 {
   "name": "logging-note",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A simple proxy for `console.*()` calls which copies log messages to a note.",
   "main": "main.js",
   "scripts": {
