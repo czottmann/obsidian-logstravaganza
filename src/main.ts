@@ -1,20 +1,36 @@
-import { Plugin, TAbstractFile, TFile } from "obsidian";
+import { Plugin, TFile } from "obsidian";
 
-const ORIGINALS: { [key: string]: Function } = {};
-const COLORS: { [key: string]: string } = {
-  "log": "⬜️",
-  "error": "🟥",
-  "info": "🟦",
-  "warn": "🟧",
+const PLUGIN_LOGGING_PREFIX = "logging-note";
+const CONSOLE_ORIGINALS: { [key: string]: Function } = {
+  "debug": console.debug,
+  "error": console.error,
+  "info": console.info,
+  "log": console.log,
+  "warn": console.warn,
+};
+const SEVERITY_EMOJI: { [key: string]: string } = {
   "debug": "🟫",
+  "error": "🟥",
+  "fatal": "❌",
+  "info": "🟦",
+  "log": "⬜️",
+  "warn": "🟧",
 };
 
 export default class LoggingNote extends Plugin {
-  async onload() {
-    this.app.workspace.onLayoutReady(() => installProxies());
+  onload() {
+    this.app.workspace.onLayoutReady(() => {
+      installProxies();
+      setTimeout(() => {
+        Object.keys(CONSOLE_ORIGINALS).forEach((level) => {
+          window.console[level](`[${PLUGIN_LOGGING_PREFIX}] ${level} test`);
+        });
+        hurray();
+      }, 2000);
+    });
   }
 
-  async onunload() {
+  onunload() {
     removeProxies();
   }
 }
@@ -28,23 +44,29 @@ async function getNoteFile() {
 }
 
 function installProxies() {
-  Object.keys(COLORS).forEach((level) => {
+  window.addEventListener("error", onWindowError);
+  Object.keys(CONSOLE_ORIGINALS).forEach((level) => {
     const console = <any> window.console;
-    ORIGINALS[level] = console[level];
-
     console[level] = (...args: any[]) => {
-      ORIGINALS[level](...args);
       appendToNote(level, ...args);
+      CONSOLE_ORIGINALS[level](...args);
     };
   });
-  console.log("Proxies installed");
+
+  CONSOLE_ORIGINALS.log(`[${PLUGIN_LOGGING_PREFIX}] Proxies installed`);
 }
 
 function removeProxies() {
-  Object.keys(ORIGINALS).forEach((level) => {
-    (<any> window.console)[level] = ORIGINALS[level];
+  Object.keys(CONSOLE_ORIGINALS).forEach((level) => {
+    (<any> window.console)[level] = CONSOLE_ORIGINALS[level];
   });
-  console.log("Proxies removed");
+  window.removeEventListener("error", onWindowError);
+  console.log(`[${PLUGIN_LOGGING_PREFIX}] Proxies removed`);
+}
+
+async function onWindowError(event: ErrorEvent) {
+  const { message, colno, lineno, filename } = event;
+  await appendToNote("fatal", `${message} (${filename}:${lineno}:${colno})`);
 }
 
 async function appendToNote(level: string, ...args: any[]) {
@@ -55,8 +77,8 @@ async function appendToNote(level: string, ...args: any[]) {
   const logMsg = args
     .map((arg) => typeof arg === "string" ? arg : JSON.stringify(arg))
     .join(" ");
-  const prefix = COLORS[level];
-  const newLine =
-    `\`\`\`${prefix} ${timestamp} [${level.toUpperCase()}] ${logMsg}\`\`\``;
+  const prefix = SEVERITY_EMOJI[level];
+  const newLine = `${timestamp} ${prefix} [${level.toUpperCase()}] ${logMsg}`;
+
   await vault.modify(note, `${noteContent}${newLine}\n`);
 }
