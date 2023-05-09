@@ -1,14 +1,14 @@
 {
-	"name": "obsidian-sample-plugin",
-	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"name": "logging-note",
+	"version": "0.1.0",
+	"description": "A simple proxy for `console.*()` calls which copies log messages to a note.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "Carlo Zottmann",
 	"license": "MIT",
 	"devDependencies": {
 		"@types/node": "^16.11.58",
