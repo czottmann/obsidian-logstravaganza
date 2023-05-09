@@ -9,30 +9,35 @@ const CONSOLE_ORIGINALS: { [key: string]: Function } = {
   "warn": console.warn,
 };
 const SEVERITY_EMOJI: { [key: string]: string } = {
-  "debug": "🟫",
-  "error": "🟥",
+  "debug": "🔎",
+  "error": "❗️",
   "fatal": "❌",
-  "info": "🟦",
-  "log": "⬜️",
+  "info": "ℹ️",
+  "log": "🗒️",
   "warn": "🟧",
 };
 
+type LogEvent = {
+  timestamp: Date;
+  level: string;
+  args: any[];
+};
+const LOG_EVENTS: LogEvent[] = [];
+
 export default class LoggingNote extends Plugin {
   onload() {
-    this.app.workspace.onLayoutReady(() => {
-      installProxies();
-      setTimeout(() => {
-        Object.keys(CONSOLE_ORIGINALS).forEach((level) => {
-          window.console[level](`[${PLUGIN_LOGGING_PREFIX}] ${level} test`);
-        });
-        hurray();
-      }, 2000);
-    });
+    this.app.workspace.onLayoutReady(() => installProxies());
   }
 
   onunload() {
     removeProxies();
   }
+}
+
+function addToLogEvents(level: string, ...args: any[]) {
+  const timestamp = new Date();
+  LOG_EVENTS.push({ timestamp, level, args });
+  debounceProcessLogEvents();
 }
 
 async function getNoteFile() {
@@ -48,12 +53,16 @@ function installProxies() {
   Object.keys(CONSOLE_ORIGINALS).forEach((level) => {
     const console = <any> window.console;
     console[level] = (...args: any[]) => {
-      appendToNote(level, ...args);
+      addToLogEvents(level, ...args);
       CONSOLE_ORIGINALS[level](...args);
     };
   });
 
-  CONSOLE_ORIGINALS.log(`[${PLUGIN_LOGGING_PREFIX}] Proxies installed`);
+  addToLogEvents(
+    "info",
+    `[${PLUGIN_LOGGING_PREFIX}] ----- Plugin loaded -----`,
+  );
+  addToLogEvents("info", `[${PLUGIN_LOGGING_PREFIX}] Proxies installed`);
 }
 
 function removeProxies() {
@@ -61,24 +70,44 @@ function removeProxies() {
     (<any> window.console)[level] = CONSOLE_ORIGINALS[level];
   });
   window.removeEventListener("error", onWindowError);
-  console.log(`[${PLUGIN_LOGGING_PREFIX}] Proxies removed`);
+  console.info(`[${PLUGIN_LOGGING_PREFIX}] Proxies removed`);
 }
 
-async function onWindowError(event: ErrorEvent) {
+function onWindowError(event: ErrorEvent) {
   const { message, colno, lineno, filename } = event;
-  await appendToNote("fatal", `${message} (${filename}:${lineno}:${colno})`);
+  addToLogEvents("fatal", `${message} (${filename}:${lineno}:${colno})`);
 }
 
-async function appendToNote(level: string, ...args: any[]) {
+function debounce(func: Function, delayInMs: number) {
+  let timeoutId: any;
+
+  return function (...args: any[]) {
+    clearTimeout(timeoutId);
+
+    timeoutId = setTimeout(() => {
+      func.apply(this, args);
+    }, delayInMs);
+  };
+}
+
+async function processLogEvents() {
   const { vault } = window.app;
   const note = await getNoteFile();
-  const noteContent = await vault.read(note);
-  const timestamp = new Date().toISOString();
-  const logMsg = args
-    .map((arg) => typeof arg === "string" ? arg : JSON.stringify(arg))
-    .join(" ");
-  const prefix = SEVERITY_EMOJI[level];
-  const newLine = `${timestamp} ${prefix} [${level.toUpperCase()}] ${logMsg}`;
 
-  await vault.modify(note, `${noteContent}${newLine}\n`);
+  let logEvent: LogEvent | undefined;
+  while (logEvent = LOG_EVENTS.shift()) {
+    const { timestamp, level, args } = logEvent;
+    const noteContent = await vault.read(note);
+
+    const logMsg = args
+      .map((arg) => typeof arg === "string" ? arg : JSON.stringify(arg))
+      .join(" ");
+    const prefix = SEVERITY_EMOJI[level];
+    const newLine =
+      `${timestamp.toISOString()} ${prefix} [${level.toUpperCase()}] ${logMsg}`;
+
+    await vault.modify(note, `${noteContent}${newLine}\n`);
+  }
 }
+
+const debounceProcessLogEvents = debounce(processLogEvents, 1000);
