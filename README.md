@@ -7,20 +7,20 @@ It will start logging as soon as it initializes.  The log note `LOGGING-NOTE.md`
 
 ## Example output
 
-````
+```
 | Timestamp | Level | Message |
 | --------- | ----- | ------- |
 | 2023-05-10T17:37:46.457Z | INFO | [Log To Note] ----- Plugin loaded ----- |
 | 2023-05-10T17:37:46.457Z | INFO | [Log To Note] Proxy set up |
-| 2023-05-10T17:37:46.632Z | LOG | [Actions URI] Registered URI handlers: ["actions-uri","actions-uri/dataview","actions-uri/dataview/table-query","actions-uri/dataview/list-query","actions-uri/daily-note","actions-uri/daily-note/list","actions-uri/daily-note/get-current","actions-uri/daily-note/get-most-recent","actions-uri/daily-note/open-current","actions-uri/daily-note/open-most-recent","actions-uri/daily-note/create", ……… |
+| 2023-05-10T17:37:46.632Z | LOG | [Actions URI] Registered URI handlers: ["actions-uri","actions-uri/dataview","actions-uri/dataview/table-query", ……… |
 | 2023-05-10T17:37:46.632Z | TIME | Omnisearch - Indexing total time |
 | 2023-05-10T17:37:46.632Z | LOG | Omnisearch - 42 files total |
 | 2023-05-10T17:37:46.632Z | LOG | Omnisearch - Cache is disabled |
 | 2023-05-10T17:37:46.696Z | LOG | Dataview: all 42 files have been indexed in 0.065s (40 cached, 0 skipped). |
 | 2023-05-10T17:37:46.702Z | LOG | Dataview: Dropped cache entries for 1 deleted files. |
 | 2023-05-10T17:37:46.713Z | TIMEEND | Omnisearch - Indexing total time |
-| 2023-05-10T17:38:24.580Z | LOG | Received URL action {"if-exists":"skip","x-error":"actions-for-obsidian://x-callback-url/response?requestID=C50A7FF9-A843-415B-98D2-9220E8071A6B&responseType=error","file":"WORKING","content":"","vault":"Testbed","x-cancel":"actions-for-obsidian://x-callback-url/response?requestID=C50A7FF9-A843-415B-98D2-9220E8071A6B&responseType=cancel", ……… |
-| 2023-05-10T17:38:24.608Z | LOG | [Actions URI] Call handled: {"params":{"action":"actions-uri/note/create","vault":"Testbed","debug-mode":false,"x-error":"actions-for-obsidian://x-callback-url/response?requestID=C50A7FF9-A843-415B-98D2-9220E8071A6B&responseType=error","x-success":"actions-for-obsidian://x-callback-url/response?requestID=C50A7FF9-A843-415B-98D2-9220E8071A6B&responseType=success", ……… |
+| 2023-05-10T17:38:24.580Z | LOG | Received URL action {"if-exists":"skip","x-error":"actions-for-obsidian://x-callback-url/response? ……… |
+| 2023-05-10T17:38:24.608Z | LOG | [Actions URI] Call handled: {"params":{"action":"actions-uri/note/create","vault":"Testbed","debug-mode":false, ……… |
 ```
 
 In reading mode, the output will be displayed as a table.
