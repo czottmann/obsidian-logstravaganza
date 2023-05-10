@@ -1,9 +1,9 @@
 {
-  "id": "logging-note",
-  "name": "Logging Note",
+  "id": "log-to-note",
+  "name": "Log To Note",
   "version": "0.1.3",
   "minAppVersion": "1.2.0",
-  "description": "A simple proxy for `console.*()` calls which copies log messages to a note.",
+  "description": "A simple proxy for `console.*()` calls which copies log messages and uncaught exceptions to a note.",
   "author": "Carlo Zottmann",
   "authorUrl": "https://github.com/czottmann",
   "isDesktopOnly": false
