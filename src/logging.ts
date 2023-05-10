@@ -64,20 +64,20 @@ const processLogEvents = debounce(async () => {
     // Destructure the log event properties
     const { timestamp, level, args } = logEvent;
     const ts = timestamp.toISOString();
-    const lvl = level.toUpperCase();
+    const lvl = level.toUpperCase().padEnd(5, " ");
 
     // Format the log message
     const logMsg = args
-      .map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg)))
+      .map((arg) => (typeof arg === "string") ? arg : JSON.stringify(arg))
       .join(" ");
     const marker = severityMarkers[level] || severityMarkers["_unknown"];
-    newLines.push(`${ts} ${marker} [${lvl}] ${logMsg}`);
+    newLines.push(`${marker} ${ts} ${lvl} | ${logMsg}`);
   }
 
   // Read the current content of the note file
   const noteContent = await vault.read(note);
 
   // Append the new log message to the note file
-  const linesToAppend = newLines.join("\n\n") + "\n\n";
-  await vault.modify(note, `${noteContent}${linesToAppend}`);
+  const linesToAppend = newLines.join("\n") + "\n\n";
+  await vault.modify(note, noteContent + linesToAppend);
 }, 1000);
