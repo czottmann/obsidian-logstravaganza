@@ -4,6 +4,8 @@ This plugin copies all console output and uncaught exceptions to a note in your 
 
 It will start logging as soon as it initializes.  The log note `LOGGING-NOTE.md` will be created in the root of your vault.  Due to the way Obsidian works, the plugin can't know about past log messages, i.e. `console` output that occurred before the plugin was initialized.
 
+**Please note:** When this plugin is active and proxying `console` calls, all output to the actual console will appear as coming from `plugin:logging-note`.
+
 
 ## Example output
 
@@ -53,6 +55,13 @@ Clone the repository, run `pnpm install` OR `npm install` to install the depende
 ## Author
 
 Carlo Zottmann, <carlo@zottmann.co>, https://zottmann.co/, https://github.com/czottmann
+
+
+## Disclaimer
+
+Use at your own risk.  Things might go sideways, hard.  I'm not responsible for any data loss or damage.  You have been warned.
+
+Always back up your data.  Seriously.
 
 
 ## License
