@@ -1,7 +1,7 @@
 {
   "name": "log-to-note",
   "version": "0.1.4",
-  "description": "A simple proxy for `console.*()` calls which copies log messages to a note.",
+  "description": "A simple proxy for `console.*()` calls which copies log messages and uncaught exceptions to a note.",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
