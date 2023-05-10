@@ -59,16 +59,13 @@ const processLogEvents = debounce(
           continue;
         }
 
-        const ts = timestamp.toISOString();
-        const lvl = level.toUpperCase();
-
         // Format the log message
         const logMsg = args
           .map((arg) => (typeof arg === "string") ? arg : JSON.stringify(arg))
           .join(" ");
 
         // Add a table row to the note file
-        newLines.push(`| ${ts} | ${lvl} | ${logMsg} |`);
+        newLines.push(`| ${timestamp.toISOString()} | ${level} | ${logMsg} |`);
       }
 
       // Read the current content of the note file
