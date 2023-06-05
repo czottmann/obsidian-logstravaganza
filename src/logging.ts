@@ -30,7 +30,7 @@ export function addToLogEvents(level: string, ...args: any[]): void {
  */
 const processLogEvents = debounce(
   () => {
-    // File operations before the layout is ready are usually not a good idea,
+    // Processing file before the layout is ready are usually not a good idea,
     // so we'll make sure Obsidian is ready before doing anything.
     window.app.workspace.onLayoutReady(async () => {
       // Access the vault from the window object
@@ -53,19 +53,36 @@ const processLogEvents = debounce(
           newLines.push(
             "",
             "",
-            "| Timestamp | Level | Message |",
-            "| --------- | ----- | ------- |",
+            "| Timestamp | Originator | Level | Message |",
+            "| --------- | ---------- | ----- | ------- |",
           );
           continue;
         }
 
         // Format the log message
-        const logMsg = args
+        let logMsg = args
           .map((arg) => (typeof arg === "string") ? arg : JSON.stringify(arg))
           .join(" ");
 
+        // If the log message starts with "[Plugin Name] ", then extract "Plugin
+        // Name", store it as the originator, and remove the prefix from
+        // `logMsg`.
+        //
+        // This is a convention I use in my plugins to make it easier to filter
+        // log messages by plugin: I prefix all log messages with the plugin
+        // name in square brackets.
+        const regex = /^\[(.*?)\] /;
+        const match = logMsg.match(regex);
+        let originator = "";
+        if (match) {
+          originator = match[1];
+          logMsg = logMsg.replace(regex, "");
+        }
+
         // Add a table row to the note file
-        newLines.push(`| ${timestamp.toISOString()} | ${level} | ${logMsg} |`);
+        newLines.push(
+          `| ${timestamp.toISOString()} | ${originator} | ${level} | ${logMsg} |`,
+        );
       }
 
       // Read the current content of the note file
