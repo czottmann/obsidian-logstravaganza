@@ -1,5 +1,5 @@
 {
-  "name": "log-to-note",
+  "name": "logstravaganza",
   "version": "1.0.0",
   "description": "A simple proxy for `console.*()` calls which copies log messages and uncaught exceptions to a note.",
   "main": "main.js",

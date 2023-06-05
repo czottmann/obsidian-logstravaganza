@@ -46,7 +46,7 @@ That's it.
 2. Add "Logstravaganza" to BRAT:
     1. Open "Obsidian42 - BRAT" via Settings → Community Plugins
     2. Click "Add Beta plugin"
-    3. Use the repository address `czottmann/obsidian-log-to-note`
+    3. Use the repository address `czottmann/obsidian-logstravaganza`
 3. Enable "Logstravaganza" under Settings → Options → Community Plugins
 
 
