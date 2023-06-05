@@ -1,4 +1,5 @@
-# Log To Note
+# Logstravaganza:
+**Adventures in Console Land**
 
 This plugin copies all console output and uncaught exceptions to a note in your vault.  It's mainly aimed at developers, and makes debugging of mobile plugins easier (YMMV). You could ask your customers to install this plugin and send you the log note when they report a bug.
 
@@ -14,8 +15,8 @@ When the log message starts with "\[something\] ", then "something" will be used
 ```
 | Timestamp | Orignator | Level | Message |
 | --------- | --------- | ----- | ------- |
-| 2023-05-10T17:37:46.457Z | Log To Note | INFO | ----- Plugin loaded ----- |
-| 2023-05-10T17:37:46.457Z | Log To Note | INFO | Proxy set up |
+| 2023-05-10T17:37:46.457Z | Logstravaganza | INFO | ----- Plugin loaded ----- |
+| 2023-05-10T17:37:46.457Z | Logstravaganza | INFO | Proxy set up |
 | 2023-05-10T17:37:46.632Z | Actions URI | LOG | Registered URI handlers: ["actions-uri","actions-uri/dataview","actions-uri/dataview/table-query", ……… |
 | 2023-05-10T17:37:46.632Z | | TIME | Omnisearch - Indexing total time |
 | 2023-05-10T17:37:46.632Z | | LOG | Omnisearch - 42 files total |
@@ -32,7 +33,7 @@ In reading mode, the output will be displayed as a table.
 
 ## Installation
 
-1. Search for "Log To Note" in Obsidian's community plugins browser. ([This link should bring it up.](https://obsidian.md/plugins?id=zottmann))
+1. Search for "Logstravaganza" in Obsidian's community plugins browser. ([This link should bring it up.](https://obsidian.md/plugins?id=zottmann))
 2. Install it.
 3. Enable the plugin in your Obsidian settings under "Community plugins".
 
@@ -42,11 +43,11 @@ That's it.
 ## Installation via <abbr title="Beta Reviewers Auto-update Tester">BRAT</abbr> (for pre-releases or betas)
 
 1. Install [BRAT](https://github.com/TfTHacker/obsidian42-brat).
-2. Add "Log To Note" to BRAT:
+2. Add "Logstravaganza" to BRAT:
     1. Open "Obsidian42 - BRAT" via Settings → Community Plugins
     2. Click "Add Beta plugin"
     3. Use the repository address `czottmann/obsidian-log-to-note`
-3. Enable "Log To Note" under Settings → Options → Community Plugins
+3. Enable "Logstravaganza" under Settings → Options → Community Plugins
 
 
 ## Development

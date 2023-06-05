@@ -1,2 +1,2 @@
-export const PLUGIN_LOGGING_PREFIX = "Log To Note";
+export const PLUGIN_LOGGING_PREFIX = "Logstravaganza";
 export const OUTPUT_FILENAME = "LOGGING-NOTE.md";

@@ -1,6 +1,6 @@
 {
   "id": "log-to-note",
-  "name": "Log To Note",
+  "name": "Logstravaganza",
   "version": "0.1.5",
   "minAppVersion": "1.2.0",
   "description": "A simple proxy for `console.*()` calls which copies log messages and uncaught exceptions to a note.",
