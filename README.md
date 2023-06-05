@@ -5,9 +5,9 @@ This plugin copies all console output and uncaught exceptions to a note in your 
 
 It will start logging as soon as it initializes.  The log note `LOGGING-NOTE.md` will be created in the root of your vault.  Due to the way Obsidian works, the plugin can't know about past log messages, i.e. `console` output that occurred before the plugin was initialized.
 
-When the log message starts with "\[something\] ", then "something" will be used in the output as originator, i.e. as the source of the log message.  If the log message doesn't start with "\[something\] ", then the originator will be left empty. This is a convention I use in my plugins to make it easier to filter log messages by plugin: I prefix all log messages with the plugin name in square brackets.
+When a log message starts with "\[Some Plugin Name\]", then "Some Plugin Name" will be used in the output as originator, i.e. as the source of the log message.  If the log message doesn't start with this prefix, then the originator will be left blank. This prefixing is a convention I use in my own plugins to make it easier to filter log messages later on.
 
-**Please note:** When this plugin is active and proxying `console` calls, all output to the actual console will appear as coming from `plugin:logging-note`.
+**Please note:** When this plugin is active and proxying `console` calls, all output to the actual console will appear as coming from `plugin:logstravaganza`.
 
 
 ## Example output
