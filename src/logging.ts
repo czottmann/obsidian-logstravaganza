@@ -60,28 +60,17 @@ const processLogEvents = debounce(
         }
 
         // Format the log message
-        let logMsg = args
+        const logMsg = args
           .map((arg) => (typeof arg === "string") ? arg : JSON.stringify(arg))
           .join(" ");
+        let { originator, message } = splitOriginatorAndMessage(logMsg);
 
-        // If the log message starts with "[Plugin Name] ", then extract "Plugin
-        // Name", store it as the originator, and remove the prefix from
-        // `logMsg`.
-        //
-        // This is a convention I use in my plugins to make it easier to filter
-        // log messages by plugin: I prefix all log messages with the plugin
-        // name in square brackets.
-        const regex = /^\[(.*?)\] /;
-        const match = logMsg.match(regex);
-        let originator = "";
-        if (match) {
-          originator = match[1];
-          logMsg = logMsg.replace(regex, "");
-        }
+        // Escape the pipe character so it doesn't break the table
+        message = message.replace("|", "\\|");
 
         // Add a table row to the note file
         newLines.push(
-          `| ${timestamp.toISOString()} | ${originator} | ${level} | ${logMsg} |`,
+          `| ${timestamp.toISOString()} | ${originator} | ${level} | ${message} |`,
         );
       }
 
@@ -95,3 +84,21 @@ const processLogEvents = debounce(
   },
   1000,
 );
+
+// If the log message starts with "[Plugin Name] ", then extract "Plugin Name",
+// store it as the originator, and remove the prefix from the message.
+//
+// This is a convention I use in my plugins to make it easier to filter log
+// messages by plugin: I prefix all log messages with the plugin name in square
+// brackets.
+function splitOriginatorAndMessage(message: string) {
+  const regex = /^\[(.*?)\] /;
+  const match = message.match(regex);
+  let originator = "";
+  if (match) {
+    originator = match[1];
+    message = message.replace(regex, "");
+  }
+
+  return { originator, message };
+}
