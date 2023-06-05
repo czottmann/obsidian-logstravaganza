@@ -1,7 +1,7 @@
 {
   "id": "logstravaganza",
   "name": "Logstravaganza",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minAppVersion": "1.2.0",
   "description": "A simple proxy for `console.*()` calls which copies log messages and uncaught exceptions to a note.",
   "author": "Carlo Zottmann",
