@@ -1,4 +1,4 @@
-# Logstravaganza:
+# Logstravaganza
 **Adventures in Console Land**
 
 This plugin copies all console output and uncaught exceptions to a note in your vault.  It's mainly aimed at developers, and makes debugging of mobile plugins easier (YMMV). You could ask your customers to install this plugin and send you the log note when they report a bug.
@@ -13,8 +13,8 @@ When the log message starts with "\[something\] ", then "something" will be used
 ## Example output
 
 ```
-| Timestamp | Orignator | Level | Message |
-| --------- | --------- | ----- | ------- |
+| Timestamp | Originator | Level | Message |
+| --------- | ---------- | ----- | ------- |
 | 2023-05-10T17:37:46.457Z | Logstravaganza | INFO | ----- Plugin loaded ----- |
 | 2023-05-10T17:37:46.457Z | Logstravaganza | INFO | Proxy set up |
 | 2023-05-10T17:37:46.632Z | Actions URI | LOG | Registered URI handlers: ["actions-uri","actions-uri/dataview","actions-uri/dataview/table-query", ……… |
