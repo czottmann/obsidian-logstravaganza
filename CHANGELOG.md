@@ -1,6 +1,6 @@
 # Release history
 
-## 1.1.0, 2023-06-07
+## 1.1.1, 2023-06-07
 
 - Refactored everything as part of Community Plugins code review. Got good input
   there!
