@@ -19,7 +19,7 @@ export class NoteLogger {
    * @param level - The level of the log event.
    * @param args - The arguments to be logged.
    */
-  public addToLogEvents(level: string, ...args: any[]): void {
+  public log(level: string, ...args: any[]): void {
     // Get the current time
     const timestamp = new Date();
 

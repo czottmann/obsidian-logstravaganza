@@ -35,7 +35,7 @@ export class ConsoleProxy {
           if (typeof property === "function") {
             // Wrap the original method with the extra logging behavior
             return function (...args: any[]) {
-              logger.addToLogEvents(prop, ...args);
+              logger.log(prop, ...args);
 
               // Forward the method call to the original `console` method
               return property.apply(target, args);
@@ -73,6 +73,6 @@ export class ConsoleProxy {
     const logMessage = `${message} (${filename}:${lineno}:${colno})`;
 
     // Add a `fatal`-level log event to the queue
-    this.logger.addToLogEvents("fatal", logMessage);
+    this.logger.log("fatal", logMessage);
   }
 }

@@ -8,15 +8,10 @@ export default class LoggingNote extends Plugin {
 
   onload() {
     this.logger = new NoteLogger(this.app);
-    this.logger.addToLogEvents("_tableheader");
+    this.logger.log("_tableheader");
     this.cProxy = new ConsoleProxy({ app: this.app, logger: this.logger });
     this.cProxy.setup();
-
-    this.logger.addToLogEvents(
-      "info",
-      this.logger.prefixMsg("----- Plugin loaded -----"),
-    );
-    this.logger.addToLogEvents("info", this.logger.prefixMsg("Proxy set up"));
+    this.logger.log("info", this.logger.prefixMsg("Proxy set up"));
   }
 
   onunload() {
