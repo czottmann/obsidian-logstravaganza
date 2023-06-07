@@ -89,12 +89,10 @@ export class NoteLogger {
           );
         }
 
-        // Read the current content of the note file
-        const noteContent = await vault.read(note);
-
         // Append the new log message to the note file
-        const linesToAppend = newLines.join("\n");
-        await vault.modify(note, noteContent + linesToAppend);
+        await vault.process(note, (currentNoteContent) => {
+          return currentNoteContent + newLines.join("\n");
+        });
       });
     },
     1000,
