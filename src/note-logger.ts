@@ -1,5 +1,10 @@
 import { App, debounce, TFile } from "obsidian";
-import { LogEvent } from "./types";
+
+type LogEvent = {
+  timestamp: Date;
+  level: string;
+  args: any[];
+};
 
 export class NoteLogger {
   private readonly app: App;
