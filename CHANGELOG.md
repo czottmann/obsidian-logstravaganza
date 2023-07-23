@@ -1,5 +1,12 @@
 # Release history
 
+## 1.2.0, 2023-07-23
+
+- Fixes missing line breaks between some table rows (#6)
+- Adds device name (taken from Sync core plugin) to log note title (#7)
+- Adds the original sender of a log message to the log note
+
+
 ## 1.1.1, 2023-06-07
 
 - Refactored everything as part of Community Plugins code review. Got good input
