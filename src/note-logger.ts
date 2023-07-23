@@ -1,4 +1,5 @@
 import { App, debounce, TFile } from "obsidian";
+import { getDeviceName } from "./device-helper";
 
 type LogEvent = {
   timestamp: Date;
@@ -10,11 +11,12 @@ type LogEvent = {
 export class NoteLogger {
   private readonly app: App;
   private readonly PLUGIN_LOGGING_PREFIX = "Logstravaganza";
-  private readonly OUTPUT_FILENAME = "LOGGING-NOTE.md";
+  private readonly OUTPUT_FILENAME: string;
   private logEventsQueue: LogEvent[] = [];
 
   constructor(app: App) {
     this.app = app;
+    this.OUTPUT_FILENAME = `LOGGING-NOTE (${getDeviceName(app)}).md`;
   }
 
   /**
