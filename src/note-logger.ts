@@ -96,7 +96,7 @@ export class NoteLogger {
 
         // Append the new log message to the note file
         await vault.process(note, (currentNoteContent) => {
-          return currentNoteContent + newLines.join("\n");
+          return currentNoteContent + newLines.join("\n") + "\n";
         });
       });
     },
