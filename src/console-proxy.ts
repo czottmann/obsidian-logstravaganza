@@ -35,7 +35,13 @@ export class ConsoleProxy {
           if (typeof property === "function") {
             // Wrap the original method with the extra logging behavior
             return function (...args: any[]) {
-              logger.log(prop, ...args);
+              // Get the sender of the log event by parsing the stack trace
+              const sender = new Error().stack
+                ?.split("\n").at(2)
+                ?.replace(/^.+\((.+?)\).*$/, "$1")
+                .replace("app://obsidian.md/", "");
+
+              logger.log(prop, sender, ...args);
 
               // Forward the method call to the original `console` method
               return property.apply(target, args);

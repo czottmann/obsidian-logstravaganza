@@ -3,9 +3,7 @@
 
 This plugin copies all console output and uncaught exceptions to a note in your vault.  It's mainly aimed at developers, and makes debugging of mobile plugins easier (YMMV). You could ask your customers to install this plugin and send you the log note when they report a bug.
 
-It will start logging as soon as it initializes.  The log note `LOGGING-NOTE.md` will be created in the root of your vault.  Due to the way Obsidian works, the plugin can't know about past log messages, i.e. `console` output that occurred before the plugin was initialized.
-
-When a log message starts with "\[Some Plugin Name\]", then "Some Plugin Name" will be used in the output as originator, i.e. as the source of the log message.  If the log message doesn't start with this prefix, then the originator will be left blank. This prefixing is a convention I use in my own plugins to make it easier to filter log messages later on.
+It will start logging as soon as it initializes.  The log note `LOGGING-NOTE (device name).md` will be created in the root of your vault.  (Note: `device name` is a placeholder, and will be replaced with the actual device name as returned by the Sync core plugin. This works whether or not Sync is activated or not.)  Due to the way Obsidian works, the plugin can't know about past log messages, i.e. `console` output that occurred before the plugin was initialized.
 
 **Please note:** When this plugin is active and proxying `console` calls, all output to the actual console will appear as coming from `plugin:logstravaganza`.
 
@@ -16,17 +14,14 @@ Bug reports and feature requests are welcome, feel free to [open an issue](https
 ```
 | Timestamp | Originator | Level | Message |
 | --------- | ---------- | ----- | ------- |
-| 2023-05-10T17:37:46.457Z | Logstravaganza | INFO | ----- Plugin loaded ----- |
-| 2023-05-10T17:37:46.457Z | Logstravaganza | INFO | Proxy set up |
-| 2023-05-10T17:37:46.632Z | Actions URI | LOG | Registered URI handlers: ["actions-uri","actions-uri/dataview","actions-uri/dataview/table-query", ……… |
-| 2023-05-10T17:37:46.632Z | | TIME | Omnisearch - Indexing total time |
-| 2023-05-10T17:37:46.632Z | | LOG | Omnisearch - 42 files total |
-| 2023-05-10T17:37:46.632Z | | LOG | Omnisearch - Cache is disabled |
-| 2023-05-10T17:37:46.696Z | | LOG | Dataview: all 42 files have been indexed in 0.065s (40 cached, 0 skipped). |
-| 2023-05-10T17:37:46.702Z | | LOG | Dataview: Dropped cache entries for 1 deleted files. |
-| 2023-05-10T17:37:46.713Z | | TIMEEND | Omnisearch - Indexing total time |
-| 2023-05-10T17:38:24.580Z | | LOG | Received URL action {"if-exists":"skip","x-error":"actions-for-obsidian://x-callback-url/response? ……… |
-| 2023-05-10T17:38:24.608Z | Actions URI | LOG | Call handled: {"params":{"action":"actions-uri/note/create","vault":"Testbed","debug-mode":false, ……… |
+| 2023-05-10T17:37:46.457Z | plugin:logstravaganza | INFO | [Logstravaganza] Proxy set up (v1.1.1) |
+| 2023-05-10T17:37:46.632Z | plugin:actions-uri:10201:11 | LOG | Registered URI handlers: ["actions-uri","actions-uri/dataview","actions-uri/dataview/table-query", ……… |
+| 2023-05-10T17:37:46.632Z | plugin:omnisearch:45:7203 | TIME | Omnisearch - Indexing total time |
+| 2023-05-10T17:37:46.632Z | plugin:omnisearch:45:7325 | LOG | Omnisearch - 42 files total |
+| 2023-05-10T17:37:46.632Z | plugin:omnisearch:45:7377 | LOG | Omnisearch - Omnisearch - Cache is enabled |
+| 2023-05-10T17:37:46.696Z | plugin:dataview:12571:17 | LOG | Dataview: all 42 files have been indexed in 0.065s (40 cached, 0 skipped). |
+| 2023-05-10T17:38:24.580Z | app.js:1:1973721 | LOG | Received URL action {"if-exists":"skip","x-error":"actions-for-obsidian://x-callback-url/response? ……… |
+| 2023-05-10T17:38:24.608Z | plugin:actions-uri:10201:11 | LOG | Call handled: {"params":{"action":"actions-uri/note/create","vault":"Testbed","debug-mode":false, ……… |
 ```
 
 In reading mode, the output will be displayed as a table.

@@ -4,6 +4,7 @@ type LogEvent = {
   timestamp: Date;
   level: string;
   args: any[];
+  sender: string | undefined;
 };
 
 export class NoteLogger {
@@ -22,14 +23,15 @@ export class NoteLogger {
    * to the note file.
    *
    * @param level - The level of the log event.
-   * @param args - The arguments to be logged.
+   * @param sender - The sender of the log event (e.g., "plugin:whatever").
+   * @param args - The arguments to be logged, optional.
    */
-  public log(level: string, ...args: any[]): void {
+  public log(level: string, sender: string | undefined, ...args: any[]): void {
     // Get the current time
     const timestamp = new Date();
 
     // Create a log event and add it to the list
-    this.logEventsQueue.push({ timestamp, level, args });
+    this.logEventsQueue.push({ timestamp, level, sender, args });
 
     // Tell the processing function there's new work but debounce it so it doesn't
     // fall over itself.
@@ -66,7 +68,7 @@ export class NoteLogger {
         let logEvent: LogEvent | undefined;
         while ((logEvent = this.logEventsQueue.shift())) {
           // Destructure the log event properties
-          const { timestamp, level, args } = logEvent;
+          const { timestamp, level, sender, args } = logEvent;
 
           if (level === "_tableheader") {
             // Add a table header to the note file
@@ -82,15 +84,13 @@ export class NoteLogger {
           // Format the log message
           const logMsg = args
             .map((arg) => (typeof arg === "string") ? arg : JSON.stringify(arg))
-            .join(" ");
-          let { originator, message } = this.splitOriginatorAndMessage(logMsg);
-
-          // Escape the pipe character so it doesn't break the table
-          message = message.replace("|", "\\|");
+            .join(" ")
+            // Escape the pipe character so it doesn't break the table
+            .replace("|", "\\|");
 
           // Add a table row to the note file
           newLines.push(
-            `| ${timestamp.toISOString()} | ${originator} | ${level} | ${message} |`,
+            `| ${timestamp.toISOString()} | ${sender} | ${level} | ${logMsg} |`,
           );
         }
 
@@ -102,24 +102,6 @@ export class NoteLogger {
     },
     1000,
   );
-
-  // If the log message starts with "[Plugin Name] ", then extract "Plugin Name",
-  // store it as the originator, and remove the prefix from the message.
-  //
-  // This is a convention I use in my plugins to make it easier to filter log
-  // messages by plugin: I prefix all log messages with the plugin name in square
-  // brackets.
-  private splitOriginatorAndMessage(message: string) {
-    const regex = /^\[(.*?)\] /;
-    const match = message.match(regex);
-    let originator = "";
-    if (match) {
-      originator = match[1];
-      message = message.replace(regex, "");
-    }
-
-    return { originator, message };
-  }
 
   /**
    * Retrieves the note file with the specified path or creates a new one if it
