@@ -7,7 +7,7 @@ It will start logging as soon as it initializes.  The log note `LOGGING-NOTE (de
 
 **Please note:** When this plugin is active and proxying `console` calls, all output to the actual console will appear as coming from `plugin:logstravaganza`.
 
-Bug reports and feature requests are welcome, feel free to [open an issue](https://github.com/czottmann/obsidian-logstravaganza/issues) here on GitHub. For discussion, please see the [Plugin Forum](https://forum.actions.work/c/logstravaganza-obsidian-plugin/8) ("Log in with GitHub" is enabled).
+Bug reports and feature requests are welcome, feel free to [open an issue](https://github.com/czottmann/obsidian-logstravaganza/issues) here on GitHub. For discussions, please visit the [Plugin Forum](https://forum.actions.work/c/logstravaganza-obsidian-plugin/8) ("Log in with GitHub" is enabled).
 
 ## Example output
 
