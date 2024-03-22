@@ -2,21 +2,16 @@ import { debounce, Notice, Plugin, TFile } from "obsidian";
 import { ConsoleProxy } from "./console-proxy";
 import { findFormatterByID } from "./formatters";
 import { PLUGIN_INFO } from "./plugin-info";
-import { prefixMsg } from "./string-helpers";
+import { getDeviceName, prefixMsg } from "./utils";
 import { LogEvent, LogEventsFormatter } from "./types";
-import { getDeviceName } from "./device-helpers";
 
 export default class LoggingNote extends Plugin {
   private queue: LogEvent[];
   private proxy: ConsoleProxy;
   private formatter: LogEventsFormatter;
-
   private deviceName: string = getDeviceName(this.app);
 
   onload() {
-    // this.logger = new NoteLogger(this.app);
-    // this.logger.log("_tableheader", name);
-
     this.queue = this.createQueue(() => this.writeToFile());
     this.proxy = new ConsoleProxy(this.queue).setup();
     this.proxy.storeEvent(
@@ -84,13 +79,13 @@ export default class LoggingNote extends Plugin {
    *
    * @returns `LogEvent[]`
    */
-  private createQueue(onNewElement: () => void): LogEvent[] {
-    const debouncedFn = debounce(onNewElement, 1000);
+  private createQueue(onPush: () => void): LogEvent[] {
+    const callback = debounce(onPush, 1000);
     const queue: LogEvent[] = [];
     const handler: ProxyHandler<LogEvent[]> = {
       get(target: any, prop) {
         if (prop === "push" || (prop as Symbol).description === "push") {
-          debouncedFn();
+          callback();
         }
         return target[prop];
       },

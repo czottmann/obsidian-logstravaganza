@@ -1,5 +1,5 @@
 import { LogEvent } from "./types";
-import { prefixMsg } from "./string-helpers";
+import { prefixMsg } from "./utils";
 
 // Storing the original `console` object so we can restore it later
 const WINDOW_CONSOLE = window.console;
