@@ -57,8 +57,7 @@ export default class Logstravaganza extends Plugin {
   private async writeToFile() {
     const { vault, workspace } = this.app;
 
-    // Processing file before the layout is ready are usually not a good idea,
-    // so we'll make sure Obsidian is ready before doing anything.
+    // Processing files before the layout is ready is usually not a good idea…
     workspace.onLayoutReady(async () => {
       const formatter = findFormatterByID(this.settings.formatterID)!;
       const filename = this.getOutputFilename(formatter.fileExt);
