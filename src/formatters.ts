@@ -1,9 +1,9 @@
-import { mdtableFormatter } from "./formatters/mdtable";
-import { ndjsonFormatter } from "./formatters/ndjson";
+import mdtable from "./formatters/mdtable";
+import ndjson from "./formatters/ndjson";
 
 export const formatters = [
-  mdtableFormatter,
-  ndjsonFormatter,
+  mdtable,
+  ndjson,
 ]
   .sort((a, b) => a.title.localeCompare(b.title));
 

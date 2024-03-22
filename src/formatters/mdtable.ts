@@ -1,6 +1,6 @@
-import { LogEvent, LogEventsFormatter } from "../types";
+import { LogEventsFormatter } from "../types";
 
-export const mdtableFormatter: LogEventsFormatter = {
+export default <LogEventsFormatter> {
   id: "mdtable",
   title: "Markdown Table",
   description: "Generates a Markdown file containing a table",

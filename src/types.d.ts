@@ -4,7 +4,10 @@ export interface LogstravaganzaSettings {
 
 export interface LogEventsFormatter {
   /**
-   * The ID of the formatter. This is used to identify the formatter in the settings.
+   * The ID of the formatter. This is used to identify the formatter in the
+   * settings. It should be unique among all formatters, all lowercase, and
+   * have a clear relation to the object it represents (e.g., when the formatter
+   * is named `ndjsonFormatter`, the ID should be `ndjson`).
    */
   id: string;
 
@@ -21,7 +24,8 @@ export interface LogEventsFormatter {
   description?: string;
 
   /**
-   * The file extension for the output file, e.g. `.md`, `.ndjson`, `.txt`.
+   * The file extension for the output file, e.g. `md`, `ndjson`, `txt` (omit
+   * the leading period!).
    */
   fileExt: string;
 

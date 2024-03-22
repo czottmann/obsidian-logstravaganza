@@ -1,6 +1,6 @@
 import { LogEventsFormatter } from "../types";
 
-export const ndjsonFormatter: LogEventsFormatter = {
+export default <LogEventsFormatter> {
   id: "ndjson",
   title: "NDJSON",
   description: "Generates a newline-delimited JSON file",
