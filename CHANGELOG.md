@@ -1,5 +1,15 @@
 # Release history
 
+## 1.3.0, 2024-03-TODO
+
+This update brings a full rewrite of the plugin: Not only is it more performant
+and more reliable now, but now there's support for different output formats.
+In addition to the tried-and-true Markdown table file, there's now the option
+to log to an [NDJSON file](https://github.com/ndjson/ndjson-spec).
+
+- Adds support for NDJSON output format
+- Adds settings tab
+
 ## 1.2.0, 2023-07-23
 
 - Fixes missing line breaks between some table rows (#6)
