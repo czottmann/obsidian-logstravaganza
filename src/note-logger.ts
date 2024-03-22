@@ -1,5 +1,5 @@
 import { App, debounce, TFile } from "obsidian";
-import { getDeviceName } from "./device-helper";
+import { getDeviceName } from "./device-helpers";
 
 type LogEvent = {
   timestamp: Date;
@@ -38,15 +38,6 @@ export class NoteLogger {
     // Tell the processing function there's new work but debounce it so it doesn't
     // fall over itself.
     this.processLogEvents();
-  }
-
-  /**
-   * Prefixes a message with the plugin logging prefix.
-   * @param msg - The message to be prefixed.
-   * @returns The prefixed message.
-   */
-  public prefixMsg(msg: string): string {
-    return `[${this.PLUGIN_LOGGING_PREFIX}] ${msg}`;
   }
 
   /**
