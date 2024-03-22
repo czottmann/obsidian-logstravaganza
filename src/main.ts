@@ -1,15 +1,17 @@
 import { debounce, Notice, Plugin, TFile } from "obsidian";
 import { ConsoleProxy } from "./console-proxy";
-import { NoteLogger } from "./note-logger";
+import { findFormatterByID } from "./formatters";
 import { PLUGIN_INFO } from "./plugin-info";
 import { prefixMsg } from "./string-helpers";
-import { LogEvent, LogEventsPrinter } from "./types";
-// import { createLogEventsQueue } from "./queue";
+import { LogEvent, LogEventsFormatter } from "./types";
+import { getDeviceName } from "./device-helpers";
 
 export default class LoggingNote extends Plugin {
   private queue: LogEvent[];
   private proxy: ConsoleProxy;
-  private printer: LogEventsPrinter;
+  private formatter: LogEventsFormatter;
+
+  private deviceName: string = getDeviceName(this.app);
 
   onload() {
     // this.logger = new NoteLogger(this.app);
@@ -36,16 +38,22 @@ export default class LoggingNote extends Plugin {
    * when new log events have been intercepted.
    */
   private async writeToFile() {
-    const formatter = null;
-    const filename = "LOGGING-NOTE.ndjson";
+    // TODO: Read Settings/configuration
+    const formatterID = "ndjson";
+
+    const formatter = findFormatterByID(formatterID)!;
+    const filename = `LOGGING-NOTE (${this.deviceName}).${formatter.fileExt}`;
 
     // Retrieve the note file
-    const outputFile = await this.getFile(filename);
+    const outputFile = await this.getFile(filename, formatter.contentHead);
 
+    // Write the log events to the file
     let logEvent: LogEvent | undefined;
     while ((logEvent = this.queue.shift())) {
-      const newLine = JSON.stringify(logEvent) + "\n";
-      await this.app.vault.append(outputFile, newLine);
+      await this.app.vault.append(
+        outputFile,
+        formatter.format(logEvent) + "\n",
+      );
     }
   }
 
@@ -55,10 +63,15 @@ export default class LoggingNote extends Plugin {
    *
    * @returns A `Promise` that resolves to a `TFile` representing the file.
    */
-  private async getFile(filename: string): Promise<TFile> {
+  private async getFile(
+    filename: string,
+    initialContent?: string,
+  ): Promise<TFile> {
     const { vault } = this.app;
     const note = vault.getAbstractFileByPath(filename);
-    return (note instanceof TFile) ? note : await vault.create(filename, "");
+    return (note instanceof TFile)
+      ? note
+      : await vault.create(filename, (initialContent ?? "") + "\n");
   }
 
   /**
@@ -72,14 +85,14 @@ export default class LoggingNote extends Plugin {
    * @returns `LogEvent[]`
    */
   private createQueue(onNewElement: () => void): LogEvent[] {
-    const debouncedOnNewElement = debounce(onNewElement, 1000);
+    const debouncedFn = debounce(onNewElement, 1000);
     const queue: LogEvent[] = [];
     const handler: ProxyHandler<LogEvent[]> = {
-      get(target, prop) {
-        if (prop === "push" || (prop as Symbol).description === "push()") {
-          debouncedOnNewElement();
+      get(target: any, prop) {
+        if (prop === "push" || (prop as Symbol).description === "push") {
+          debouncedFn();
         }
-        return (<any> target)[prop];
+        return target[prop];
       },
     };
 
