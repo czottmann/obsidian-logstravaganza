@@ -1,6 +1,7 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import Logstravaganza from "./main";
 import { formatters } from "./formatters";
+import { getObsidianURI } from "./utils";
 
 export class LogstravaganzaSettingTab extends PluginSettingTab {
   plugin: Logstravaganza;
@@ -11,7 +12,7 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
   }
 
   display(): void {
-    const { containerEl } = this;
+    const { containerEl, plugin } = this;
 
     containerEl.empty();
     containerEl.createEl("h2", { text: "Logstravaganza Settings" });
@@ -29,11 +30,11 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
 
         dropdown
           .addOptions(options)
-          .setValue(this.plugin.settings.formatterID)
+          .setValue(plugin.settings.formatterID)
           .onChange(
             async (value) => {
-              this.plugin.settings.formatterID = value;
-              await this.plugin.saveSettings();
+              plugin.settings.formatterID = value;
+              await plugin.saveSettings();
               this.display();
             },
           );
@@ -44,14 +45,18 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
       attr: { style: "margin-block-start: 0; padding-inline-start: 2em;" },
     });
     formatters.forEach((f) => {
+      const filename = plugin.getOutputFilename(f.fileExt);
+      const link = getObsidianURI(this.app.vault, filename);
+
       ul.createEl("li", { attr: { style: "margin-bottom: 0.5rem;" } })
         .innerHTML = `
-          <strong>${f.title}</strong>: ${f.description}.
-          <br>
-          Output file: <code>${this.plugin.getOutputFilename(f.fileExt)}</code>.
+          <strong>${f.title}</strong>: ${f.description}.<br>
+          Output file: <a href="${link}"><code>${filename}</code></a>
         `;
     });
 
+    const afoURL =
+      "https://actions.work/actions-for-obsidian?ref=plugin-logstravaganza";
     containerEl.createEl("div", {
       attr: {
         style: `
@@ -66,21 +71,17 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
       },
     })
       .innerHTML = `
-        <a href="#link#">
+        <a href="${afoURL}">
           <img
             src="https://actions.work/img/afo-icon.png"
             style="width: 5rem; float: left; margin: -0.4rem 0.5rem 0 0;"
             alt="Actions for Obsidian icon, a cog wheel on a shiny black background">
           </a>
         Logstravaganza is brought to you by
-        <a href="#link#"><strong>Actions for Obsidian</strong></a>,
+        <a href="${afoURL}"><strong>Actions for Obsidian</strong></a>,
         a macOS/iOS app made by the same developer as this plugin. AFO is the
         missing link between Obsidian and macOS/iOS: 50+ Shortcuts actions to bring
-        your notes and your automations together. <a href="#link#">Take a look!</a>
-      `
-        .replace(
-          "#link#",
-          "https://actions.work/actions-for-obsidian?ref=plugin-logstravaganza",
-        );
+        your notes and your automations together. <a href="${afoURL}">Take a look!</a>
+      `;
   }
 }

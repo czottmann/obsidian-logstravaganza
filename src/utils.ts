@@ -71,3 +71,13 @@ export async function getFile(
     ? note
     : await vault.create(filename, (initialContent ?? "") + "\n");
 }
+
+/**
+ * Returns the Obsidian URI for the specified vault and path.
+ * @returns "obsidian://open?vault=…&file=…"
+ */
+export function getObsidianURI(vault: Vault, path: string): string {
+  const v = encodeURIComponent(vault.getName());
+  const p = encodeURIComponent(path);
+  return `obsidian://open?vault=${v}&file=${p}`;
+}
