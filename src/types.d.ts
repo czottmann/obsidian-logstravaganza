@@ -52,3 +52,8 @@ type LogEvent = {
   sender: string | undefined;
   args: any[];
 };
+
+export interface UnhandledRejectionEvent extends PromiseRejectionEvent {
+  reason: any;
+  promise: Promise<any>;
+}

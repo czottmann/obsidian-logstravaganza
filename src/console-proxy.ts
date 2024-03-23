@@ -1,19 +1,18 @@
-import { LogEvent } from "./types";
+import { LogEvent, UnhandledRejectionEvent } from "./types";
 import { prefixMsg } from "./utils";
 
-// Storing the original `console` object so we can restore it later
+// Storing the original `window.*` object so we can restore them later
 const WINDOW_CONSOLE = window.console;
+const WINDOW_ONUNHANDLEDREJECTION = window.onunhandledrejection;
 
 /**
  * A class that sets up a proxy for the `console` object to intercept log
  * events, which are added to the passed-in queue.
  */
 export class ConsoleProxy {
-  private queue: LogEvent[];
-
-  constructor(queue: LogEvent[]) {
-    this.queue = queue;
-  }
+  constructor(
+    private queue: LogEvent[],
+  ) {}
 
   // Installing the console proxy object and the listener for uncaught errors
   public setup(): ConsoleProxy {
@@ -54,14 +53,25 @@ export class ConsoleProxy {
     window.console = consoleProxy;
 
     // Listen for uncaught exceptions
-    window.addEventListener("error", this.onWindowError);
+    window.addEventListener("error", this.onWindowError.bind(this));
+    window.addEventListener(
+      "unhandledrejection",
+      this.onWindowUnhandledRejection.bind(this),
+    );
+
     return this;
   }
 
   // Removing the console proxy object and the listener for uncaught errors
   public teardown(): void {
     window.console = WINDOW_CONSOLE;
-    window.removeEventListener("error", this.onWindowError);
+    window.removeEventListener("error", this.onWindowError.bind(this));
+    window.removeEventListener(
+      "unhandledrejection",
+      this.onWindowUnhandledRejection.bind(this),
+    );
+    window.onunhandledrejection = WINDOW_ONUNHANDLEDREJECTION;
+
     console.info(prefixMsg("Proxy removed"));
   }
 
@@ -88,10 +98,38 @@ export class ConsoleProxy {
    * @param event - The error event object.
    */
   private onWindowError(event: ErrorEvent): void {
-    const { message, colno, lineno, filename } = event;
-    const logMessage = `${message} (${filename}:${lineno}:${colno})`;
+    const { message, colno, lineno, filename, error } = event;
 
     // Add a `fatal`-level log event to the queue
-    this.storeEvent("fatal", logMessage);
+    this.storeEvent(
+      "fatal",
+      `${filename}:${lineno}:${colno}`,
+      error.name,
+      message,
+      error.stack || "(stack trace unavailable)",
+    );
+  }
+
+  /**
+   * Event handler for unhandled exceptions happening in promises. Adds a
+   * "fatal"-level log event to the log event queue.
+   *
+   * @param event - The error event object.
+   */
+  private onWindowUnhandledRejection(event: UnhandledRejectionEvent): void {
+    const error = event.reason;
+    const { colno, lineno, filename } = error;
+
+    const sender = (filename && lineno && colno)
+      ? `${filename}:${lineno}:${colno}`
+      : error.stack?.match(/at eval \((.+?)\)/)?.[1] ?? "(undetermined)";
+
+    // Add a `fatal`-level log event to the queue
+    this.storeEvent(
+      "fatal",
+      sender,
+      "Uncaught (in promise)",
+      error.stack || "(stack trace unavailable)",
+    );
   }
 }
