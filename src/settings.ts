@@ -63,7 +63,10 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
           border-radius: 0.5rem;
           border: 1px dashed var(--text-muted);
           color: var(--text-muted);
+          display: grid;
           font-size: 85%;
+          grid-gap: 1rem;
+          grid-template-columns: auto 1fr;
           margin-top: 4rem;
           opacity: 0.75;
           padding: 1rem;
@@ -74,14 +77,17 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
         <a href="${afoURL}">
           <img
             src="https://actions.work/img/afo-icon.png"
-            style="width: 5rem; float: left; margin: -0.4rem 0.5rem 0 0;"
-            alt="Actions for Obsidian icon, a cog wheel on a shiny black background">
-          </a>
-        Logstravaganza is brought to you by
-        <a href="${afoURL}"><strong>Actions for Obsidian</strong></a>,
-        a macOS/iOS app made by the same developer as this plugin. AFO is the
-        missing link between Obsidian and macOS/iOS: 50+ Shortcuts actions to bring
-        your notes and your automations together. <a href="${afoURL}">Take a look!</a>
+            style="margin: -0.4rem -0.5rem -0.5rem 0; width: 5rem;"
+            alt="Actions for Obsidian icon, a cog wheel on a glossy black background">
+        </a>
+        <span>
+          Logstravaganza is brought to you by
+          <a href="${afoURL}"><strong>Actions for Obsidian</strong></a>,
+          a macOS/iOS app made by the same developer as this plugin. AFO is the
+          missing link between Obsidian and macOS&nbsp;/&nbsp;iOS: 50+ Shortcuts
+          actions to bring your notes and your automations together.
+          <a href="${afoURL}">Take a look!</a>
+        </span>
       `;
   }
 }
