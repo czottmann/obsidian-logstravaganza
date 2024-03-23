@@ -1,5 +1,9 @@
 import { LogEventsFormatter } from "../types";
 
+/**
+ * A formatter that generates a Markdown file containing a table, where each row
+ * represents a log event.
+ */
 export default <LogEventsFormatter> {
   id: "mdtable",
   title: "Markdown Table",
@@ -30,4 +34,7 @@ export default <LogEventsFormatter> {
   },
 };
 
-const escapeForMdTable = (str: string) => str.replace(/([\|\[<])/sg, "\\$1");
+const escapeForMdTable = (str: string) =>
+  str
+    .replace(/([\|\[<])/sg, "\\$1")
+    .replace(/\n/g, "<br>");
