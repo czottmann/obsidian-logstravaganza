@@ -8,9 +8,12 @@ In addition to the tried-and-true Markdown table file, there's now the option
 to log to an [NDJSON file](https://github.com/ndjson/ndjson-spec). See the README
 for examples on how to work with NDJSON files.
 
-- Adds support for NDJSON output format
-- Adds settings tab
-- Logs unhandled exceptions in `Promise`s now
+- Adds support for additional output formats, adds NDJSON format
+- Adds support for setting the output folder for log files
+- Adds toggle to date-stamp output files
+- New settings tab
+- Logs unhandled exceptions in main thread `Promise`s now (not in workers)
+- Changes output base file name
 
 ## 1.2.0, 2023-07-23
 

@@ -4,10 +4,11 @@ This is a plugin for [Obsidian](https://obsidian.md) that logs all console outpu
 
 As such, it's also useful for letting your plugin's users help you debug your plugin's issues: Ask your customers to install this plugin, then send you the resulting log when they report a bug.
 
+
 ## What it does
 
 - Intercepts and writes all `console.*()` output to a file in your vault.
-- Logs uncaught exceptions to the same file, including exceptions occurring in async code and promises.
+- Logs uncaught exceptions to the same file, including exceptions occurring in async code and promises (as long as they're happening in the main thread).
 - Logs can be written in several formats:
     - [NDJSON](https://github.com/ndjson/ndjson-spec), a plain text format that can be read by humans and machines alike. Every line in the file is a JSON object. Think CSV, but with JSON.
     - Markdown file containing a table.
@@ -15,12 +16,12 @@ As such, it's also useful for letting your plugin's users help you debug your pl
 
 ## Example output
 
-The log output will be written to a `LOGGING-NOTE (device name).*`. (Here, `device name` is a placeholder for the actual device name as returned by the core Sync plugin. This works whether or not Sync is activated or not.)
+The log output will be written to a `console-log.DEVICE-NAME.*` or, optionally, `console-log.DEVICE-NAME.2024-01-31.*` . (Here, `DEVICE-NAME` is a placeholder for the actual device name as returned by the core Sync plugin. This works whether or not Sync is activated or not.)
 
 
 ### Using the built-in NDJSON formatter
 
-Output file name: `LOGGING-NOTE (device name).ndjson`
+Output file name: `console-log.DEVICE-NAME.ndjson`
 
 ```plaintext
 {"timestamp":"2024-03-24T16:18:04.256Z","level":"info","sender":"plugin:logstravaganza","args":["[Logstravaganza] Proxy set up (v2.0.0)"]}
@@ -34,19 +35,19 @@ Obsidian won't open `.ndjson` files, even though they're basically plain text fi
 In NDJSON, every line is a self-contained JSON object.  This makes it easy to read and parse with tools like `jq`. For example, the file can be filtered with `jq`:
 
 ```bash
-jq -r 'select(.level == "error")' < "LOGGING-NOTE (My device).ndjson"
+jq -r 'select(.level == "error")' < "console-log.DEVICE-NAME.ndjson"
 ```
 
 This will only show the lines where the `level` is `error`. You can also stream the output of the plugin to a file and then use `jq` to filter it in real-time.
 
 ```bash
-tail -f "LOGGING-NOTE (My device).ndjson" | jq -r 'select(.level == "error")'
+tail -f "console-log.DEVICE-NAME.ndjson" | jq -r 'select(.level == "error")'
 ```
 
 
 ### Using the built-in Markdown Table formatter
 
-Output file name: `LOGGING-NOTE (device name).md`
+Output file name: `console-log.DEVICE-NAME.md`
 
 ```plaintext
 | Timestamp | Originator | Level | Message |
