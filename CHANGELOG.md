@@ -15,6 +15,7 @@ for examples on how to work with NDJSON files.
 - Logs unhandled exceptions in main thread `Promise`s now (not in workers)
 - Changes output base file name
 
+
 ## 1.2.0, 2023-07-23
 
 - Fixes missing line breaks between some table rows (#6)
