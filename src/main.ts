@@ -68,7 +68,7 @@ export default class Logstravaganza extends Plugin {
       const formatter = findFormatterByID(this.settings.formatterID)!;
       const filename = this.getOutputFilename(formatter.fileExt);
 
-      // Retrieve the note file
+      // Retrieve the file
       const file = await getFile(vault, filename, formatter.contentHead);
 
       // Write the log events to the file
