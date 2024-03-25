@@ -3,7 +3,6 @@ import { prefixMsg } from "./utils";
 
 // Storing the original `window.*` object so we can restore them later
 const WINDOW_CONSOLE = window.console;
-const WINDOW_ONUNHANDLEDREJECTION = window.onunhandledrejection;
 
 /**
  * A class that sets up a proxy for the `console` object to intercept log
@@ -70,7 +69,6 @@ export class ConsoleProxy {
       "unhandledrejection",
       this.onWindowUnhandledRejection.bind(this),
     );
-    window.onunhandledrejection = WINDOW_ONUNHANDLEDREJECTION;
 
     console.info(prefixMsg("Proxy removed"));
   }
@@ -118,18 +116,27 @@ export class ConsoleProxy {
    */
   private onWindowUnhandledRejection(event: UnhandledRejectionEvent): void {
     const error = event.reason;
-    const { colno, lineno, filename } = error;
 
-    const sender = (filename && lineno && colno)
-      ? `${filename}:${lineno}:${colno}`
-      : error.stack?.match(/at eval \((.+?)\)/)?.[1] ?? "(undetermined)";
+    if (typeof error === "string") {
+      this.storeEvent(
+        "fatal",
+        "sender:unknown",
+        "Uncaught (in promise)",
+        error,
+      );
+    } else {
+      const { colno, lineno, filename } = error;
+      const sender = (filename && lineno && colno)
+        ? `${filename}:${lineno}:${colno}`
+        : error.stack?.match(/at eval \((.+?)\)/)?.[1] ?? "(undetermined)";
 
-    // Add a `fatal`-level log event to the queue
-    this.storeEvent(
-      "fatal",
-      sender,
-      "Uncaught (in promise)",
-      error.stack || "(stack trace unavailable)",
-    );
+      // Add a `fatal`-level log event to the queue
+      this.storeEvent(
+        "fatal",
+        sender,
+        "Uncaught (in promise)",
+        error.stack || "(stack trace unavailable)",
+      );
+    }
   }
 }

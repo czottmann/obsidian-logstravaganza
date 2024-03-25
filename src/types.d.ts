@@ -1,5 +1,7 @@
 export interface LogstravaganzaSettings {
+  fileNameContainsDate: boolean;
   formatterID: string;
+  outputFolder: string;
 }
 
 export interface LogEventsFormatter {

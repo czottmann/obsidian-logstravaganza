@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, PluginSettingTab, Setting, TFolder } from "obsidian";
 import Logstravaganza from "./main";
 import { formatters } from "./formatters";
 import { getObsidianURI } from "./utils";
@@ -17,19 +17,15 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
     containerEl.empty();
     containerEl.createEl("h2", { text: "Logstravaganza Settings" });
 
+    // Output format
     new Setting(containerEl)
       .setName("Output format")
       .setDesc(`
         This plugin intercepts developer console messages, and saves them to a
         file in your vault. Select the output file format here.`)
       .addDropdown((dropdown) => {
-        const options: Record<string, string> = formatters.reduce(
-          (obj: any, f) => ({ [f.id]: f.title, ...obj }),
-          {},
-        );
-
         dropdown
-          .addOptions(options)
+          .addOptions(this.allFormatters())
           .setValue(plugin.settings.formatterID)
           .onChange(
             async (value) => {
@@ -45,16 +41,56 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
       attr: { style: "margin-block-start: 0; padding-inline-start: 2em;" },
     });
     formatters.forEach((f) => {
-      const filename = plugin.getOutputFilename(f.fileExt);
-      const link = getObsidianURI(this.app.vault, filename);
-
       ul.createEl("li", { attr: { style: "margin-bottom: 0.5rem;" } })
         .innerHTML = `
           <strong>${f.title}</strong>: ${f.description}.<br>
-          Output file: <a href="${link}"><code>${filename}</code></a>
+          File extension: <code>.${f.fileExt}</code>
         `;
     });
 
+    // Output folder
+    new Setting(containerEl)
+      .setName("Output folder")
+      .setDesc("Where to save the log files.")
+      .addDropdown((dropdown) => {
+        dropdown
+          .addOptions(this.allFolders())
+          .setValue(plugin.settings.outputFolder)
+          .onChange(
+            async (value) => {
+              plugin.settings.outputFolder = value;
+              await plugin.saveSettings();
+              this.display();
+            },
+          );
+      });
+
+    // Include current date in filename
+    new Setting(containerEl)
+      .setName("Include current date in filename")
+      .setDesc("Adds the YYYY-MM-DD timestamp to the output filename.")
+      .addToggle((toggle) => {
+        toggle
+          .setValue(plugin.settings.fileNameContainsDate)
+          .onChange(async (value) => {
+            plugin.settings.fileNameContainsDate = value;
+            await plugin.saveSettings();
+            this.display();
+          });
+      });
+
+    // Display & link output file path
+    const fileExt = formatters
+      .find((f) => f.id === plugin.settings.formatterID)!
+      .fileExt;
+    const filename = plugin.getOutputFilename(fileExt);
+    const link = getObsidianURI(this.app.vault, filename);
+    containerEl.createEl("h5", { text: "Output file" });
+    containerEl
+      .createEl("p", { text: "→ " })
+      .createEl("a", { text: filename, attr: { href: link } });
+
+    // Sponsoring
     const afoURL =
       "https://actions.work/actions-for-obsidian?ref=plugin-logstravaganza";
     containerEl.createEl("div", {
@@ -89,5 +125,27 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
           <a href="${afoURL}">Take a look!</a>
         </span>
       `;
+  }
+
+  private allFolders(): Record<string, string> {
+    return this.app.vault
+      .getAllLoadedFiles()
+      .filter((f) => f instanceof TFolder)
+      .map((f) => ({
+        name: `/${f.path}`.replace(/^\/+/, "/"),
+        path: f.path,
+      }))
+      .sort((a, b) => b.name.localeCompare(a.name))
+      .reduce(
+        (obj: any, f) => ({ [f.path]: f.name, ...obj }),
+        {},
+      );
+  }
+
+  private allFormatters(): Record<string, string> {
+    return formatters.reduce(
+      (obj: any, f) => ({ [f.id]: f.title, ...obj }),
+      {},
+    );
   }
 }

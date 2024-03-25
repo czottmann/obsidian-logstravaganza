@@ -1,4 +1,4 @@
-import { Notice, Plugin } from "obsidian";
+import { normalizePath, Notice, Plugin } from "obsidian";
 import { ConsoleProxy } from "./console-proxy";
 import { findFormatterByID } from "./formatters";
 import { PLUGIN_INFO } from "./plugin-info";
@@ -7,7 +7,9 @@ import { LogEvent, LogstravaganzaSettings } from "./types";
 import { createQueue, getDeviceName, getFile, prefixMsg } from "./utils";
 
 const DEFAULT_SETTINGS: LogstravaganzaSettings = {
+  fileNameContainsDate: false,
   formatterID: "mdtable",
+  outputFolder: "/",
 };
 
 export default class Logstravaganza extends Plugin {
@@ -16,7 +18,7 @@ export default class Logstravaganza extends Plugin {
   private deviceName: string = getDeviceName(this.app);
 
   settings: LogstravaganzaSettings;
-  outputFileBasename: string = `LOGGING-NOTE (${this.deviceName})`;
+  outputFileBasename: string = `console-log.${this.deviceName}`;
 
   async onload() {
     await this.loadSettings();
@@ -39,7 +41,7 @@ export default class Logstravaganza extends Plugin {
   }
 
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    this.settings = { ...DEFAULT_SETTINGS, ...await this.loadData() };
   }
 
   async saveSettings() {
@@ -47,7 +49,11 @@ export default class Logstravaganza extends Plugin {
   }
 
   getOutputFilename(ext: string) {
-    return `${this.outputFileBasename}.${ext}`;
+    const currentDate = new Date().toISOString().split("T")[0];
+    const filename = this.settings.fileNameContainsDate
+      ? `${this.outputFileBasename}.${currentDate}.${ext}`
+      : `${this.outputFileBasename}.${ext}`;
+    return normalizePath(`${this.settings.outputFolder}/${filename}`);
   }
 
   /**
