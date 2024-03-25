@@ -105,7 +105,9 @@ Clone the repository, run `pnpm install` OR `npm install` to install the depende
 
 ## Author
 
-Carlo Zottmann <carlo@zottmann.dev>, https://c.zottmann.dev/, https://zottmann.dev/
+Carlo Zottmann, <carlo@zottmann.dev>, https://c.zottmann.dev/
+
+My Obsidian plugins: https://obsidian.md/plugins?search=zottmann
 
 ### Logstravaganza is brought to you by …
 
