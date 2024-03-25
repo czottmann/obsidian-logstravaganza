@@ -1,5 +1,12 @@
 # Release history
 
+## 2.0.1, 2024-03-25
+
+- Adds countermeasures against "max call stack size exceeded" errors caused
+  by several internal Obsidian objects (app, vault, workspace, (abstract) files,
+  folders)
+
+
 ## 2.0.0, 2024-03-25
 
 This update brings a full rewrite of the plugin: Not only is it more performant
