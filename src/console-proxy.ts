@@ -1,3 +1,4 @@
+import { App, TAbstractFile, TFile, TFolder, Vault, Workspace } from "obsidian";
 import { LogEvent, UnhandledRejectionEvent } from "./types";
 import { prefixMsg } from "./utils";
 
@@ -86,7 +87,40 @@ export class ConsoleProxy {
     sender: string | undefined,
     ...args: any[]
   ): void {
-    this.queue.push({ timestamp: new Date(), level, sender, args });
+    this.queue.push({
+      timestamp: new Date(),
+      level,
+      sender,
+      args: args.map(this.rewriteForLogging.bind(this)),
+    });
+  }
+
+  /**
+   * Tries to prevent "max. call stack exceeded" errors by replacing certain
+   * objects with a string representation.
+   */
+  private rewriteForLogging(value: any): any {
+    if (value instanceof TFolder) {
+      return `[TFolder] ${value.path}`;
+    } else if (value instanceof TFile) {
+      return `[TFile] ${value.path}`;
+    } else if (value instanceof TAbstractFile) {
+      return `[TAbstractFile] ${value.path}`;
+    } else if (value instanceof App) {
+      return "[App]";
+    } else if (value instanceof Vault) {
+      return "[Vault]";
+    } else if (value instanceof Workspace) {
+      return "[Workspace]";
+    } else if (Array.isArray(value)) {
+      return value.map((item) => this.rewriteForLogging(item));
+    } else if (typeof value === "object" && value !== null) {
+      return Object.fromEntries(
+        Object.entries(value)
+          .map(([key, val]) => [key, this.rewriteForLogging(val)]),
+      );
+    }
+    return value;
   }
 
   /**
