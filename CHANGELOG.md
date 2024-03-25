@@ -1,6 +1,6 @@
 # Release history
 
-## 2.0.0, 2024-03-TODO
+## 2.0.0, 2024-03-25
 
 This update brings a full rewrite of the plugin: Not only is it more performant
 and reliable now, but it comes with support for different output formats.
