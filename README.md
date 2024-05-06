@@ -66,31 +66,44 @@ In reading mode, the output will be displayed as a table.
 Output file name: `console-log.DEVICE-NAME.md`
 
     ```
-    time: 2024-05-06T17:31:07.098Z
-    from: plugin:omnisearch:50:7623
+    time: 2024-05-06T17:31:06.874Z
+    from: plugin:logstravaganza
+    level: info
+    [Logstravaganza] Proxy set up (v2.0.1)
+    ```
+
+    ```
+    time: 2024-05-06T17:31:07.017Z
+    from: plugin:actions-uri:12152:11
     level: log
-    Omnisearch - Cache is enabled
+    [
+        "[Actions URI]",
+        "Registered URI handlers:",
+        [
+            "actions-uri",
+            "actions-uri/command",
+            "actions-uri/command/list",
+            "actions-uri/command/execute",
+            "actions-uri/dataview",
+    …
+            "actions-uri/vault/list-all-files",
+            "actions-uri/vault/list-non-notes-files"
+        ]
+    ]
     ```
 
     ```
     time: 2024-05-06T17:31:07.098Z
-    from: plugin:omnisearch:50:7696
+    from: plugin:omnisearch:50:7444
     level: time
-    Omnisearch - Loading index from cache
+    Omnisearch - Indexing total time
     ```
 
     ```
-    time: 2024-05-06T17:31:07.140Z
-    from: plugin:dataview:12878:17
+    time: 2024-05-06T17:31:07.098Z
+    from: plugin:omnisearch:50:7571
     level: log
-    Dataview: all 51 files have been indexed in 0.118s (51 cached, 0 skipped).
-    ```
-
-    ```
-    time: 2024-05-06T17:31:07.315Z
-    from: plugin:omnisearch:50:7796
-    level: timeEnd
-    Omnisearch - Loading index from cache
+    Omnisearch - 75 files total
     ```
 
 In reading mode, the output will be displayed as separate MD code blocks.
