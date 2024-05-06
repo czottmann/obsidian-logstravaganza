@@ -83,27 +83,17 @@ export function getObsidianURI(vault: Vault, path: string): string {
 }
 
 export function logLevelFilter(logEvent: LogEvent, logLevel: LogLevel) {
-  if (logLevel === "debug") {
-    // output everything
-    return true;
-  }
-  if (logLevel === "info") {
-    return logEvent.level !== "debug";
-  }
-  if (logLevel === "warn") {
-    return (
-      logEvent.level !== "debug" &&
-      logEvent.level !== "info" &&
-      logEvent.level !== "log"
-    )
-  }
-  if (logLevel === "error") {
-    return (
-      logEvent.level !== "debug" &&
-      logEvent.level !== "info" &&
-      logEvent.level !== "log" &&
-      logEvent.level !== "warn"
-    );
+  switch (logLevel) {
+    case "debug":
+      return true;
+    case "info":
+      return logEvent.level !== "debug";
+    case "warn":
+      return !["debug","info","log"].includes(logLevel);
+    case "error":
+      return !["debug", "info", "log", "warn"].includes(logEvent.level);
+    default:
+      break;
   }
   // what?
   return true;
