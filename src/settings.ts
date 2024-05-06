@@ -79,6 +79,24 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
           });
       });
 
+    // Log level!
+    new Setting(containerEl)
+      .setName("Log level to render")
+      .setDesc("Only print out the log level equal to or above what you set here.")
+      .addDropdown((dropdown) => {
+        dropdown
+          .addOption("debug", "debug (print everything)")
+          .addOption("info", "info")
+          .addOption("warn", "warn")
+          .addOption("error", "error (only print error)")
+          .setValue(plugin.settings.logLevel)
+          .onChange(async (value) => {
+            plugin.settings.logLevel = value as any;
+            await plugin.saveSettings();
+            this.display();
+          });
+      });
+
     // Display & link output file path
     const fileExt = formatters
       .find((f) => f.id === plugin.settings.formatterID)!

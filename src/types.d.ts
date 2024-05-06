@@ -2,6 +2,7 @@ export interface LogstravaganzaSettings {
   fileNameContainsDate: boolean;
   formatterID: string;
   outputFolder: string;
+  logLevel: LogLevel;
 }
 
 export interface LogEventsFormatter {
@@ -59,3 +60,5 @@ export interface UnhandledRejectionEvent extends PromiseRejectionEvent {
   reason: any;
   promise: Promise<any>;
 }
+
+export type LogLevel = "debug" | "info" | "warn" | "error";

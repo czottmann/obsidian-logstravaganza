@@ -1,5 +1,5 @@
 import { App, debounce, TFile, Vault } from "obsidian";
-import { LogEvent } from "./types";
+import type { LogEvent, LogLevel } from "./types";
 
 /**
  * Gets the device name from the sync plugin. If the device name is not
@@ -80,4 +80,21 @@ export function getObsidianURI(vault: Vault, path: string): string {
   const v = encodeURIComponent(vault.getName());
   const p = encodeURIComponent(path);
   return `obsidian://open?vault=${v}&file=${p}`;
+}
+
+export function logLevelFilter(logEvent: LogEvent, logLevel: LogLevel) {
+  switch (logLevel) {
+    case "debug":
+      return true;
+    case "info":
+      return logEvent.level !== "debug";
+    case "warn":
+      return !["debug","info","log"].includes(logLevel);
+    case "error":
+      return !["debug", "info", "log", "warn"].includes(logEvent.level);
+    default:
+      break;
+  }
+  // what?
+  return true;
 }
