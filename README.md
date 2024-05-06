@@ -19,7 +19,7 @@ As such, it's also useful for letting your plugin's users help you debug your pl
 The log output will be written to a `console-log.DEVICE-NAME.*` or, optionally, `console-log.DEVICE-NAME.2024-01-31.*` . (Here, `DEVICE-NAME` is a placeholder for the actual device name as returned by the core Sync plugin. This works whether or not Sync is activated or not.)
 
 
-### Using the built-in NDJSON formatter
+### Using the NDJSON formatter
 
 Output file name: `console-log.DEVICE-NAME.ndjson`
 
@@ -45,7 +45,7 @@ tail -f "console-log.DEVICE-NAME.ndjson" | jq -r 'select(.level == "error")'
 ```
 
 
-### Using the built-in Markdown Table formatter
+### Using the Markdown Table formatter
 
 Output file name: `console-log.DEVICE-NAME.md`
 
@@ -60,6 +60,40 @@ Output file name: `console-log.DEVICE-NAME.md`
 
 In reading mode, the output will be displayed as a table.
 
+
+### Using the Markdown Code Blocks formatter
+
+Output file name: `console-log.DEVICE-NAME.md`
+
+    ```
+    time: 2024-05-06T17:31:07.098Z
+    from: plugin:omnisearch:50:7623
+    level: log
+    Omnisearch - Cache is enabled
+    ```
+
+    ```
+    time: 2024-05-06T17:31:07.098Z
+    from: plugin:omnisearch:50:7696
+    level: time
+    Omnisearch - Loading index from cache
+    ```
+
+    ```
+    time: 2024-05-06T17:31:07.140Z
+    from: plugin:dataview:12878:17
+    level: log
+    Dataview: all 51 files have been indexed in 0.118s (51 cached, 0 skipped).
+    ```
+
+    ```
+    time: 2024-05-06T17:31:07.315Z
+    from: plugin:omnisearch:50:7796
+    level: timeEnd
+    Omnisearch - Loading index from cache
+    ```
+
+In reading mode, the output will be displayed as separate MD code blocks.
 
 ## Caveats
 
