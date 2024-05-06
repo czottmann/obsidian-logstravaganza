@@ -114,6 +114,11 @@ My Obsidian plugins: https://obsidian.md/plugins?search=zottmann
 [**Actions for Obsidian**](https://actions-for-obsidian.com?ref=github), a macOS/iOS app also made by me! AFO is the missing link between Obsidian and macOS / iOS: 50+ Shortcuts actions to bring your notes and your automations together. [Take a look!](https://actions.work/actions-for-obsidian?ref=github)
 
 
+## Contributors
+
+- [@fyears](https://github.com/fyears) ([PR#11](https://github.com/czottmann/obsidian-logstravaganza/pull/11), [PR#12](https://github.com/czottmann/obsidian-logstravaganza/pull/12))
+
+
 ## Disclaimer
 
 Use at your own risk.  Things might go sideways, hard.  I'm not responsible for any data loss or damage.  You have been warned.
