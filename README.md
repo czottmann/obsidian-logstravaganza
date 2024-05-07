@@ -12,6 +12,7 @@ As such, it's also useful for letting your plugin's users help you debug your pl
 - Logs can be written in several formats:
     - [NDJSON](https://github.com/ndjson/ndjson-spec), a plain text format that can be read by humans and machines alike. Every line in the file is a JSON object. Think CSV, but with JSON.
     - Markdown file containing a table.
+    - Markdown file containing code blocks.
 
 
 ## Example output

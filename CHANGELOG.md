@@ -1,6 +1,6 @@
 # Release history
 
-## 2.1.0, 2024-xx-xx
+## 2.1.0, 2024-05-07
 
 - Adds new output formatter, Markdown Code Blocks, which outputs log entries as
   code blocks in a Markdown file. This is useful for log files that are meant to
