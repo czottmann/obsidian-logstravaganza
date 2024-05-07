@@ -1,7 +1,7 @@
 {
   "name": "logstravaganza",
-  "version": "2.0.1",
-  "description": "A simple proxy for `console.*()` calls which copies log messages and uncaught exceptions to a note.",
+  "version": "2.1.0",
+  "description": "A simple proxy for `console.*()` calls which copies log messages and uncaught exceptions to a note or file.",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",

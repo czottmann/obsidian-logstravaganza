@@ -4,12 +4,13 @@ import { findFormatterByID } from "./formatters";
 import { PLUGIN_INFO } from "./plugin-info";
 import { LogstravaganzaSettingTab } from "./settings";
 import { LogEvent, LogstravaganzaSettings } from "./types";
-import { createQueue, getDeviceName, getFile, prefixMsg } from "./utils";
+import { createQueue, getDeviceName, getFile, logLevelFilter, prefixMsg } from "./utils";
 
 const DEFAULT_SETTINGS: LogstravaganzaSettings = {
   fileNameContainsDate: false,
   formatterID: "mdtable",
   outputFolder: "/",
+  logLevel: "debug"
 };
 
 export default class Logstravaganza extends Plugin {
@@ -74,8 +75,10 @@ export default class Logstravaganza extends Plugin {
       // Write the log events to the file
       let logEvent: LogEvent | undefined;
       while ((logEvent = this.queue.shift())) {
-        let line = formatter.format(logEvent) + "\n";
-        await vault.append(file, line);
+        if (logLevelFilter(logEvent, this.settings.logLevel)) {
+          let line = formatter.format(logEvent) + "\n";
+          await vault.append(file, line);
+        }
       }
     });
   }

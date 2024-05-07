@@ -1,5 +1,15 @@
 # Release history
 
+## 2.1.0, 2024-05-07
+
+- Adds new output formatter, Markdown Code Blocks, which outputs log entries as
+  code blocks in a Markdown file. This is useful for log files that are meant to
+  be read by humans, not machines. Contribution by [@fyears](https://github.com/fyears)
+  ([PR#11](https://github.com/czottmann/obsidian-logstravaganza/pull/11)), thanks!
+- Adds new setting to specify the log level. Another fine contribution by
+  [@fyears](https://github.com/fyears), ([PR#12](https://github.com/czottmann/obsidian-logstravaganza/pull/12))
+
+
 ## 2.0.1, 2024-03-25
 
 - Adds countermeasures against "max call stack size exceeded" errors caused

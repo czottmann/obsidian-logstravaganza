@@ -12,6 +12,7 @@ As such, it's also useful for letting your plugin's users help you debug your pl
 - Logs can be written in several formats:
     - [NDJSON](https://github.com/ndjson/ndjson-spec), a plain text format that can be read by humans and machines alike. Every line in the file is a JSON object. Think CSV, but with JSON.
     - Markdown file containing a table.
+    - Markdown file containing code blocks.
 
 
 ## Example output
@@ -19,7 +20,7 @@ As such, it's also useful for letting your plugin's users help you debug your pl
 The log output will be written to a `console-log.DEVICE-NAME.*` or, optionally, `console-log.DEVICE-NAME.2024-01-31.*` . (Here, `DEVICE-NAME` is a placeholder for the actual device name as returned by the core Sync plugin. This works whether or not Sync is activated or not.)
 
 
-### Using the built-in NDJSON formatter
+### Using the NDJSON formatter
 
 Output file name: `console-log.DEVICE-NAME.ndjson`
 
@@ -45,7 +46,7 @@ tail -f "console-log.DEVICE-NAME.ndjson" | jq -r 'select(.level == "error")'
 ```
 
 
-### Using the built-in Markdown Table formatter
+### Using the Markdown Table formatter
 
 Output file name: `console-log.DEVICE-NAME.md`
 
@@ -60,6 +61,53 @@ Output file name: `console-log.DEVICE-NAME.md`
 
 In reading mode, the output will be displayed as a table.
 
+
+### Using the Markdown Code Blocks formatter
+
+Output file name: `console-log.DEVICE-NAME.md`
+
+    ```
+    time: 2024-05-06T17:31:06.874Z
+    from: plugin:logstravaganza
+    level: info
+    [Logstravaganza] Proxy set up (v2.0.1)
+    ```
+
+    ```
+    time: 2024-05-06T17:31:07.017Z
+    from: plugin:actions-uri:12152:11
+    level: log
+    [
+        "[Actions URI]",
+        "Registered URI handlers:",
+        [
+            "actions-uri",
+            "actions-uri/command",
+            "actions-uri/command/list",
+            "actions-uri/command/execute",
+            "actions-uri/dataview",
+    …
+            "actions-uri/vault/list-all-files",
+            "actions-uri/vault/list-non-notes-files"
+        ]
+    ]
+    ```
+
+    ```
+    time: 2024-05-06T17:31:07.098Z
+    from: plugin:omnisearch:50:7444
+    level: time
+    Omnisearch - Indexing total time
+    ```
+
+    ```
+    time: 2024-05-06T17:31:07.098Z
+    from: plugin:omnisearch:50:7571
+    level: log
+    Omnisearch - 75 files total
+    ```
+
+In reading mode, the output will be displayed as separate MD code blocks.
 
 ## Caveats
 
@@ -112,6 +160,11 @@ My Obsidian plugins: https://obsidian.md/plugins?search=zottmann
 ### Logstravaganza is brought to you by …
 
 [**Actions for Obsidian**](https://actions-for-obsidian.com?ref=github), a macOS/iOS app also made by me! AFO is the missing link between Obsidian and macOS / iOS: 50+ Shortcuts actions to bring your notes and your automations together. [Take a look!](https://actions.work/actions-for-obsidian?ref=github)
+
+
+## Contributors
+
+- [@fyears](https://github.com/fyears) ([PR#11](https://github.com/czottmann/obsidian-logstravaganza/pull/11), [PR#12](https://github.com/czottmann/obsidian-logstravaganza/pull/12))
 
 
 ## Disclaimer

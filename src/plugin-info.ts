@@ -1,5 +1,5 @@
 /* File will be overwritten by bin/release.sh! */
 export const PLUGIN_INFO = {
-  "pluginVersion": "2.0.1",
-  "pluginReleasedAt": "2024-03-25T18:46:55+0100"
+  "pluginVersion": "2.1.0",
+  "pluginReleasedAt": "2024-05-07T12:22:52+0200"
 }
