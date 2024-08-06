@@ -89,7 +89,7 @@ export function logLevelFilter(logEvent: LogEvent, logLevel: LogLevel) {
     case "info":
       return logEvent.level !== "debug";
     case "warn":
-      return !["debug","info","log"].includes(logLevel);
+      return !["debug", "info", "log"].includes(logEvent.level);
     case "error":
       return !["debug", "info", "log", "warn"].includes(logEvent.level);
     default:
