@@ -1,5 +1,11 @@
 # Release history
 
+## 2.1.1, 2024-08-06
+
+- Fixes "warn" log level outputting all the things. Thanks to [@Erallie](https://github.com/Erallie) for both the heads-up and the fix! [#14](https://github.com/czottmann/obsidian-logstravaganza/issues/14)
+- Changes min Obsidian version from 1.4.0 to 1.5.0.
+
+
 ## 2.1.0, 2024-05-07
 
 - Adds new output formatter, Markdown Code Blocks, which outputs log entries as
