@@ -11,9 +11,9 @@
   "author": "Carlo Zottmann",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^18.19.3",
-    "@typescript-eslint/eslint-plugin": "^7.1.0",
-    "@typescript-eslint/parser": "^7.1.0",
+    "@types/node": "^18.19.50",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
     "builtin-modules": "3.3.0",
     "esbuild": "0.17.3",
     "obsidian": "latest",
