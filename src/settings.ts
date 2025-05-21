@@ -15,7 +15,6 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
     const { containerEl, plugin } = this;
 
     containerEl.empty();
-    containerEl.createEl("h2", { text: "Logstravaganza Settings" });
 
     // Output format
     new Setting(containerEl)
@@ -82,7 +81,9 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
     // Log level!
     new Setting(containerEl)
       .setName("Log level to render")
-      .setDesc("Only print out the log level equal to or above what you set here.")
+      .setDesc(`
+        Only print out the log level equal to or above what you set here.
+      `)
       .addDropdown((dropdown) => {
         dropdown
           .addOption("debug", "debug (print everything)")
@@ -92,6 +93,24 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
           .setValue(plugin.settings.logLevel)
           .onChange(async (value) => {
             plugin.settings.logLevel = value as any;
+            await plugin.saveSettings();
+            this.display();
+          });
+      });
+
+    // Include current date in filename
+    new Setting(containerEl)
+      .setName("Debounce writing to output file")
+      .setDesc(`
+        Disabling this setting will cause Logstravaganza to write everything
+        to the output file as it happens, and as such will impact performance.
+        Usually, you'll want to keep this setting enabled.
+      `)
+      .addToggle((toggle) => {
+        toggle
+          .setValue(plugin.settings.debounceWrites)
+          .onChange(async (value) => {
+            plugin.settings.debounceWrites = value;
             await plugin.saveSettings();
             this.display();
           });

@@ -3,6 +3,15 @@ export interface LogstravaganzaSettings {
   formatterID: string;
   outputFolder: string;
   logLevel: LogLevel;
+
+  /**
+   * By default, Logstravanganza will debounce write operations to the file to
+   * avoid excessive writes. This is done by default to improve performance.
+   * Setting this to `false` will write the log events immediately to the file,
+   * likely resulting in a performance hit. (Personally, I disable this option
+   * for local debugging and testing purposes.)
+   */
+  debounceWrites: boolean;
 }
 
 export interface LogEventsFormatter {
