@@ -4,13 +4,20 @@ import { findFormatterByID } from "./formatters";
 import { PLUGIN_INFO } from "./plugin-info";
 import { LogstravaganzaSettingTab } from "./settings";
 import { LogEvent, LogstravaganzaSettings } from "./types";
-import { createQueue, getDeviceName, getFile, logLevelFilter, prefixMsg } from "./utils";
+import {
+  createQueue,
+  getDeviceName,
+  getFile,
+  logLevelFilter,
+  prefixMsg,
+} from "./utils";
 
 const DEFAULT_SETTINGS: LogstravaganzaSettings = {
   fileNameContainsDate: false,
   formatterID: "mdtable",
   outputFolder: "/",
-  logLevel: "debug"
+  logLevel: "debug",
+  debounceWrites: true,
 };
 
 export default class Logstravaganza extends Plugin {
@@ -24,7 +31,10 @@ export default class Logstravaganza extends Plugin {
   async onload() {
     await this.loadSettings();
 
-    this.queue = createQueue(this.writeToFile.bind(this));
+    this.queue = createQueue(
+      this.writeToFile.bind(this),
+      this.settings.debounceWrites,
+    );
     this.proxy = new ConsoleProxy(this.queue).setup();
     this.proxy.storeEvent(
       "info",

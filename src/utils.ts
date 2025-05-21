@@ -37,11 +37,15 @@ export function prefixMsg(msg: string): string {
  *
  * @param onPush Handler function which to be called on new elements. The
  * function will be automatically debounced (1s).
+ * @param disableDebounce If `true`, the debouncing is disabled.
  *
  * @returns `LogEvent[]`
  */
-export function createQueue(onPush: () => void): LogEvent[] {
-  const callback = debounce(onPush, 1000);
+export function createQueue(
+  onPush: () => void,
+  debounceWrites: boolean = true,
+): LogEvent[] {
+  const callback = debounceWrites ? debounce(onPush, 1000) : onPush;
   const queue: LogEvent[] = [];
   const handler: ProxyHandler<LogEvent[]> = {
     get(target: any, prop) {
