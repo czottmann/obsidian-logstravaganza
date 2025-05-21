@@ -26,11 +26,12 @@ const rsyncPlugin = {
           }
           if (stderr) {
             console.log(stderr);
-          } else
+          } else {
             console.log(
-              "[watch] sync'd via `../bin/sync-current-plugins-to-workbench-vault.fish`"
+              "[watch] sync'd via `../bin/sync-current-plugins-to-workbench-vault.fish`",
             );
-        }
+          }
+        },
       );
     });
   },
@@ -59,7 +60,7 @@ const context = await esbuild.context({
     ...builtins,
   ],
   format: "cjs",
-  target: "es2018",
+  target: "es2022",
   logLevel: "info",
   sourcemap: isProduction ? false : "inline",
   treeShaking: true,
