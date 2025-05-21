@@ -1,6 +1,6 @@
 {
   "name": "logstravaganza",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "A simple proxy for `console.*()` calls which copies log messages and uncaught exceptions to a note or file.",
   "main": "main.js",
   "scripts": {

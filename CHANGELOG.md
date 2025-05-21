@@ -1,5 +1,11 @@
 # Release history
 
+## 2.2.0, 2025-05-21
+
+- Adds toggle for disabling file write debouncing.
+- Changes min Obsidian version from 1.5.0 to 1.8.0.
+
+
 ## 2.1.1, 2024-08-06
 
 - Fixes "warn" log level outputting all the things. Thanks to [@Erallie](https://github.com/Erallie) for both the heads-up and the fix! [#14](https://github.com/czottmann/obsidian-logstravaganza/issues/14)
