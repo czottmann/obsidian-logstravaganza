@@ -13,29 +13,31 @@ function allow_or_exit
 end
 
 argparse \
-    "platform=" "version=" "obsidian-version=" help \
+    "platform=" "patch-version=" "obsidian-version=" help \
     -- $argv
 or return
 
 if test -n "$_flag_help"
     echo "
-Must be run from the 'main' branch.
+Only works in `release/` branches, e.g. `release/1.0.x` or `release/2.1.x`.
 
-Commits the current changes and tags the commit with the specified version.
+Commits the current changes and tags the commit, effectively marking the commit
+as the release commit for the version contained in the branch name.
 
 EXAMPLE:
-  bin/tag-release.fish --version 2.3.0 --obsidian-version 1.4.0
+- If the branch name is `release/1.2.x`, and the patch version is '3', then the
+  tag `1.2.3` will be created.
 
 FLAGS:
-  --version             The full version string for the release (e.g., 2.3.0). REQUIRED.
+  --patch-version       Will be added to the branch release number. REQUIRED.
   --obsidian-version    The minimum obsidian version for this release. REQUIRED.
   --help                This usage description.
 "
     exit 1
 end
 
-if test -z "$_flag_version"
-    echo "ERROR: --version must be set, exiting"
+if test -z "$_flag_patch_version"
+    echo "ERROR: --patch-version must be set, exiting"
     exit 1
 end
 
@@ -45,12 +47,9 @@ if test -z "$_flag_obsidian_version"
 end
 
 set git_branch (git branch --show-current)
-if test "$git_branch" != "main"
-    echo "ERROR: Must be on 'main' branch (currently on '$git_branch'), exiting"
-    exit 1
-end
-
-set release_tag $_flag_version
+set release_tag (
+        echo $git_branch | cut -d "/" -f 2 | string replace ".x" ".$_flag_patch_version"
+    )
 
 allow_or_exit "New tag will be named '$release_tag', minimum Obsidian version is $_flag_obsidian_version."
 
@@ -96,5 +95,17 @@ echo
 allow_or_exit "Now pushing the commit and tag to the remote …"
 
 git push --tags
+echo "Done!"
+echo
+
+allow_or_exit "Now merging branch '$git_branch' into 'main' …"
+
+git checkout main
+git pull --tags
+git merge -m "[MRG] Merges release '$release_tag'" --no-edit --no-ff $git_branch
+
+allow_or_exit "Push main to remote?"
+git push
+
 echo "Done!"
 echo
