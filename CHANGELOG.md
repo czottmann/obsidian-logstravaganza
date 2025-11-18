@@ -1,5 +1,10 @@
 # Release history
 
+## 2.3.0, 2025-11-18
+
+Chore release, updating dependencies for security.
+
+
 ## 2.2.0, 2025-05-21
 
 - Adds toggle for disabling file write debouncing.
