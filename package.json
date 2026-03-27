@@ -14,7 +14,7 @@
     "@types/node": "^24.0.0",
     "@typescript-eslint/eslint-plugin": "^8.47.0",
     "@typescript-eslint/parser": "^8.47.0",
-    "brace-expansion": ">=1.1.12",
+    "brace-expansion": ">=5.0.5",
     "builtin-modules": "^3.3.0",
     "cross-spawn": ">=7.0.5",
     "esbuild": "^0.25.0",
