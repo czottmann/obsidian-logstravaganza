@@ -1,5 +1,12 @@
 # Release history
 
+## 2.4.0, 2026-09-24
+
+- Plugin unload removes its error and unhandled-promise-rejection listeners.
+- Updates development dependencies and switches CI and release builds to Node.js 22 and pnpm.
+- Remove unnecessary files from new releases.
+
+
 ## 2.3.0, 2025-11-18
 
 Chore release, updating dependencies for security.
