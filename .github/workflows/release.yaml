@@ -24,17 +24,11 @@ jobs:
         run: pnpm lint
       - name: Build
         run: pnpm build
-      - name: Package plugin archive
-        run: |
-          mkdir "${{ github.event.repository.name }}"
-          cp main.js manifest.json README.md "${{ github.event.repository.name }}"
-          zip -r "${{ github.event.repository.name }}-${{ github.ref_name }}.zip" "${{ github.event.repository.name }}"
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           draft: true
           files: |
-            ${{ github.event.repository.name }}-${{ github.ref_name }}.zip
             main.js
             manifest.json
           name: ${{ github.ref_name }}
