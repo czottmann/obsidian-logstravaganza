@@ -154,7 +154,7 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
         alt: "Actions for Obsidian icon, a cog wheel on a glossy black background",
       },
     });
-    const description = promo.createEl("span");
+    const description = promo.createSpan();
     description.appendText("Logstravaganza is brought to you by ");
     description.createEl("a", { attr: { href: afoURL } })
       .createEl("strong", { text: "Actions for Obsidian" });

@@ -13,4 +13,11 @@ export default [
       parserOptions: { project: "./tsconfig.json" },
     },
   },
+  {
+    files: ["src/settings.ts"],
+    rules: {
+      // Obsidian 1.8.0 does not support declarative setting definitions.
+      "obsidianmd/settings-tab/prefer-setting-definitions": "off",
+    },
+  },
 ];
