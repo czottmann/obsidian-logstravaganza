@@ -25,7 +25,7 @@ export default class Logstravaganza extends Plugin {
   private proxy!: ConsoleProxy;
   private deviceName: string = getDeviceName(this.app);
 
-  settings!: LogstravaganzaSettings;
+  declare settings: LogstravaganzaSettings;
   outputFileBasename: string = `console-log.${this.deviceName}`;
 
   async onload() {
