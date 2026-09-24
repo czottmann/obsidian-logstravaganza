@@ -131,7 +131,7 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
     // Sponsoring
     const afoURL =
       "https://actions.work/actions-for-obsidian?ref=plugin-logstravaganza";
-    const promo = containerEl.createEl("div", {
+    const promo = containerEl.createDiv({
       attr: {
         style: `
           border-radius: 0.5rem;
