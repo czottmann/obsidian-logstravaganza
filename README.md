@@ -148,7 +148,7 @@ That's it.
 
 ## Development
 
-Clone the repository, run `pnpm install` OR `npm install` to install the dependencies.  Afterwards, run `pnpm dev` OR `npm run dev` to compile and have it watch for file changes.
+Use Node.js 22. Run `corepack enable`, then `pnpm install --frozen-lockfile`. Use `pnpm dev` to watch source changes. Run `pnpm lint` and `pnpm build` before a release.
 
 
 ## Author
