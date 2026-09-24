@@ -1,14 +1,13 @@
-#!/opt/homebrew/bin/fish --login
+#!/usr/bin/env fish
 
 function allow_or_exit
-    read -P "$argv[1] Continue? [y/n] " -l response
-    switch $response
-        case y Y
-            echo
-            # We're good to go
-        case '*'
-            echo "Aborting!"
-            exit 0
+    set -l prompt "$argv[1]"
+    if test -z "$prompt"
+        set prompt "Continue?"
+    end
+    if not gum confirm "$prompt"
+        echo "Aborting!"
+        exit 0
     end
 end
 
@@ -31,7 +30,14 @@ FLAGS:
   --obsidian-version    The minimum obsidian version for this release. REQUIRED.
   --help                This usage description.
 "
-    exit 1
+    exit 0
+end
+
+for cmd in git jq gum
+    if not command -q "$cmd"
+        echo "ERROR: $cmd is required"
+        exit 1
+    end
 end
 
 if test -z "$_flag_version"
@@ -45,8 +51,13 @@ if test -z "$_flag_obsidian_version"
 end
 
 set git_branch (git branch --show-current)
-if test "$git_branch" != "main"
+if test "$git_branch" != main
     echo "ERROR: Must be on 'main' branch (currently on '$git_branch'), exiting"
+    exit 1
+end
+
+if test (count (git status --porcelain)) -gt 0
+    echo "ERROR: Working tree must be clean before a release"
     exit 1
 end
 
@@ -88,13 +99,15 @@ echo
 
 allow_or_exit
 
-git commit -m "[REL] Release $release_tag" -a
-git tag $release_tag
+git add package.json manifest.json versions.json src/plugin-info.json src/plugin-info.ts; or exit 1
+git commit -m "[REL] Release $release_tag"; or exit 1
+git tag "$release_tag"; or exit 1
 echo "Done!"
 echo
 
 allow_or_exit "Now pushing the commit and tag to the remote …"
 
-git push --tags
+git push; or exit 1
+git push --tags; or exit 1
 echo "Done!"
 echo
