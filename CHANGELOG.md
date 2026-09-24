@@ -1,11 +1,12 @@
 # Release history
 
-## 2.4.0, 2026-09-24
+## 2.4.1, 2026-09-24
 
+- Adds settings search in Obsidian 1.13 and newer.
+- Keeps support for Obsidian 1.8.0.
 - Plugin unload removes its error and unhandled-promise-rejection listeners.
 - Updates development dependencies and switches CI and release builds to Node.js 22 and pnpm.
 - Remove unnecessary files from new releases.
-
 
 ## 2.3.0, 2025-11-18
 
