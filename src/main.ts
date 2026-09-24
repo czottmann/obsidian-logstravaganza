@@ -21,18 +21,20 @@ const DEFAULT_SETTINGS: LogstravaganzaSettings = {
 };
 
 export default class Logstravaganza extends Plugin {
-  private queue: LogEvent[];
-  private proxy: ConsoleProxy;
+  private queue!: LogEvent[];
+  private proxy!: ConsoleProxy;
   private deviceName: string = getDeviceName(this.app);
 
-  settings: LogstravaganzaSettings;
+  settings!: LogstravaganzaSettings;
   outputFileBasename: string = `console-log.${this.deviceName}`;
 
   async onload() {
     await this.loadSettings();
 
     this.queue = createQueue(
-      this.writeToFile.bind(this),
+      () => {
+        void this.writeToFile();
+      },
       this.settings.debounceWrites,
     );
     this.proxy = new ConsoleProxy(this.queue).setup();
@@ -52,7 +54,10 @@ export default class Logstravaganza extends Plugin {
   }
 
   async loadSettings() {
-    this.settings = { ...DEFAULT_SETTINGS, ...await this.loadData() };
+    const savedSettings = await this.loadData() as
+      | Partial<LogstravaganzaSettings>
+      | null;
+    this.settings = { ...DEFAULT_SETTINGS, ...savedSettings };
   }
 
   async saveSettings() {

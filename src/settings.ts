@@ -1,6 +1,7 @@
 import { App, PluginSettingTab, Setting, TFolder } from "obsidian";
 import Logstravaganza from "./main";
 import { formatters } from "./formatters";
+import type { LogLevel } from "./types";
 import { getObsidianURI } from "./utils";
 
 export class LogstravaganzaSettingTab extends PluginSettingTab {
@@ -40,11 +41,12 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
       attr: { style: "margin-block-start: 0; padding-inline-start: 2em;" },
     });
     formatters.forEach((f) => {
-      ul.createEl("li", { attr: { style: "margin-bottom: 0.5rem;" } })
-        .innerHTML = `
-          <strong>${f.title}</strong>: ${f.description}.<br>
-          File extension: <code>.${f.fileExt}</code>
-        `;
+      const item = ul.createEl("li", { attr: { style: "margin-bottom: 0.5rem;" } });
+      item.createEl("strong", { text: f.title });
+      item.appendText(`: ${f.description ?? ""}.`);
+      item.createEl("br");
+      item.appendText("File extension: ");
+      item.createEl("code", { text: `.${f.fileExt}` });
     });
 
     // Output folder
@@ -67,7 +69,7 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
     // Include current date in filename
     new Setting(containerEl)
       .setName("Include current date in filename")
-      .setDesc("Adds the YYYY-MM-DD timestamp to the output filename.")
+      .setDesc("Adds the current date to the output filename.")
       .addToggle((toggle) => {
         toggle
           .setValue(plugin.settings.fileNameContainsDate)
@@ -86,26 +88,25 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
       `)
       .addDropdown((dropdown) => {
         dropdown
-          .addOption("debug", "debug (print everything)")
-          .addOption("info", "info")
-          .addOption("warn", "warn")
-          .addOption("error", "error (only print error)")
+          .addOption("debug", "Debug (print everything)")
+          .addOption("info", "Info")
+          .addOption("warn", "Warn")
+          .addOption("error", "Error (only print error)")
           .setValue(plugin.settings.logLevel)
           .onChange(async (value) => {
-            plugin.settings.logLevel = value as any;
+            plugin.settings.logLevel = value as LogLevel;
             await plugin.saveSettings();
             this.display();
           });
       });
 
-    // Include current date in filename
+    // Write debouncing
     new Setting(containerEl)
       .setName("Debounce writing to output file")
-      .setDesc(`
-        Disabling this setting will cause Logstravaganza to write everything
-        to the output file as it happens, and as such will impact performance.
-        Usually, you'll want to keep this setting enabled.
-      `)
+      .setDesc(
+        "Turning off this setting writes each log event as it occurs. " +
+        "This can reduce performance. Keep this setting on for normal use.",
+      )
       .addToggle((toggle) => {
         toggle
           .setValue(plugin.settings.debounceWrites)
@@ -122,7 +123,7 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
       .fileExt;
     const filename = plugin.getOutputFilename(fileExt);
     const link = getObsidianURI(this.app.vault, filename);
-    containerEl.createEl("h5", { text: "Output file" });
+    new Setting(containerEl).setName("Output file").setHeading();
     containerEl
       .createEl("p", { text: "→ " })
       .createEl("a", { text: filename, attr: { href: link } });
@@ -130,7 +131,7 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
     // Sponsoring
     const afoURL =
       "https://actions.work/actions-for-obsidian?ref=plugin-logstravaganza";
-    containerEl.createEl("div", {
+    const promo = containerEl.createEl("div", {
       attr: {
         style: `
           border-radius: 0.5rem;
@@ -145,23 +146,24 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
           padding: 1rem;
         `,
       },
-    })
-      .innerHTML = `
-        <a href="${afoURL}">
-          <img
-            src="https://actions.work/img/afo-icon.png"
-            style="margin: -0.4rem -0.5rem -0.5rem 0; width: 5rem;"
-            alt="Actions for Obsidian icon, a cog wheel on a glossy black background">
-        </a>
-        <span>
-          Logstravaganza is brought to you by
-          <a href="${afoURL}"><strong>Actions for Obsidian</strong></a>,
-          a macOS/iOS app made by the same developer as this plugin. AFO is the
-          missing link between Obsidian and macOS&nbsp;/&nbsp;iOS: 50+ Shortcuts
-          actions to bring your notes and your automations together.
-          <a href="${afoURL}">Take a look!</a>
-        </span>
-      `;
+    });
+    promo.createEl("a", { attr: { href: afoURL } }).createEl("img", {
+      attr: {
+        src: "https://actions.work/img/afo-icon.png",
+        style: "margin: -0.4rem -0.5rem -0.5rem 0; width: 5rem;",
+        alt: "Actions for Obsidian icon, a cog wheel on a glossy black background",
+      },
+    });
+    const description = promo.createEl("span");
+    description.appendText("Logstravaganza is brought to you by ");
+    description.createEl("a", { attr: { href: afoURL } })
+      .createEl("strong", { text: "Actions for Obsidian" });
+    description.appendText(
+      ", a macOS/iOS app made by the same developer as this plugin. " +
+      "AFO is the missing link between Obsidian and macOS / iOS: " +
+      "50+ Shortcuts actions to bring your notes and your automations together. ",
+    );
+    description.createEl("a", { text: "Take a look!", attr: { href: afoURL } });
   }
 
   private allFolders(): Record<string, string> {
@@ -173,15 +175,15 @@ export class LogstravaganzaSettingTab extends PluginSettingTab {
         path: f.path,
       }))
       .sort((a, b) => b.name.localeCompare(a.name))
-      .reduce(
-        (obj: any, f) => ({ [f.path]: f.name, ...obj }),
+      .reduce<Record<string, string>>(
+        (obj, f) => ({ [f.path]: f.name, ...obj }),
         {},
       );
   }
 
   private allFormatters(): Record<string, string> {
-    return formatters.reduce(
-      (obj: any, f) => ({ [f.id]: f.title, ...obj }),
+    return formatters.reduce<Record<string, string>>(
+      (obj, f) => ({ [f.id]: f.title, ...obj }),
       {},
     );
   }

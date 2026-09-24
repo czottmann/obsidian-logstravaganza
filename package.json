@@ -1,24 +1,30 @@
 {
   "name": "logstravaganza",
   "version": "2.3.0",
+  "packageManager": "pnpm@10.34.1",
+  "engines": {
+    "node": ">=22 <23"
+  },
   "description": "A simple proxy for `console.*()` calls which copies log messages and uncaught exceptions to a note or file.",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
-    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production"
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+    "lint": "eslint \"src/**/*.ts\""
   },
   "keywords": [],
   "author": "Carlo Zottmann",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^24.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.47.0",
-    "@typescript-eslint/parser": "^8.47.0",
+    "@types/node": "^22.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.60.0",
+    "@typescript-eslint/parser": "^8.60.0",
     "brace-expansion": ">=1.1.12",
     "builtin-modules": "^3.3.0",
     "cross-spawn": ">=7.0.5",
-    "esbuild": "^0.25.0",
-    "eslint": "^9.26.0",
+    "esbuild": "^0.25.12",
+    "eslint": "^9.39.4",
+    "eslint-plugin-obsidianmd": "^0.3.0",
     "js-yaml": ">=4.1.1",
     "obsidian": "^1.8.0",
     "tslib": "2.5.2",

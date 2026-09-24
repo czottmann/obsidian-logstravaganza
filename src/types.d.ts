@@ -62,12 +62,12 @@ type LogEvent = {
   timestamp: Date;
   level: string;
   sender: string | undefined;
-  args: any[];
+  args: unknown[];
 };
 
 export interface UnhandledRejectionEvent extends PromiseRejectionEvent {
-  reason: any;
-  promise: Promise<any>;
+  reason: unknown;
+  promise: Promise<unknown>;
 }
 
 export type LogLevel = "debug" | "info" | "warn" | "error";

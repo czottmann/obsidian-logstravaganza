@@ -36,5 +36,5 @@ export default <LogEventsFormatter> {
 
 const escapeForMdTable = (str: string) =>
   str
-    .replace(/([\|\[<])/sg, "\\$1")
+    .replace(/([|[<])/sg, "\\$1")
     .replace(/\n/g, "<br>");

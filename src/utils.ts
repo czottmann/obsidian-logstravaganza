@@ -10,8 +10,14 @@ import type { LogEvent, LogLevel } from "./types";
  * @returns The device name
  */
 export function getDeviceName(app: App): string {
-  const syncPlugin = (<any> app).internalPlugins?.plugins["sync"]?.instance;
-
+  const internalApp = app as App & {
+    internalPlugins?: {
+      plugins: Record<string, {
+        instance?: { deviceName?: string; getDefaultDeviceName(): string };
+      }>;
+    };
+  };
+  const syncPlugin = internalApp.internalPlugins?.plugins["sync"]?.instance;
   if (!syncPlugin) {
     return "Unknown device";
   }
@@ -48,11 +54,14 @@ export function createQueue(
   const callback = debounceWrites ? debounce(onPush, 1000) : onPush;
   const queue: LogEvent[] = [];
   const handler: ProxyHandler<LogEvent[]> = {
-    get(target: any, prop) {
-      if (prop === "push" || (prop as Symbol).description === "push") {
+    get(target, prop) {
+      if (
+        prop === "push" ||
+        (typeof prop === "symbol" && prop.description === "push")
+      ) {
         callback();
       }
-      return target[prop];
+      return Reflect.get(target, prop) as unknown;
     },
   };
 

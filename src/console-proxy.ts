@@ -16,17 +16,14 @@ export class ConsoleProxy {
 
   // Installing the console proxy object and the listener for uncaught errors
   public setup(): ConsoleProxy {
-    // Preventing scoping issues in the `Proxy` object
-    const self = this;
-
     const handler: ProxyHandler<Console> = {
-      get(target, prop) {
+      get: (target, prop) => {
         // Intercept the property access
-        const property = (<any> target)[prop];
+        const property: unknown = Reflect.get(target, prop);
 
         if (typeof property === "function") {
           // Wrap the original method with the extra logging behavior
-          return (...args: any[]) => {
+          return (...args: unknown[]) => {
             // Get the sender of the log event by parsing the stack trace
             const sender = new Error().stack
               ?.split("\n").at(2)
@@ -34,10 +31,10 @@ export class ConsoleProxy {
               .replace("app://obsidian.md/", "")
               .trim();
 
-            self.storeEvent(prop.toString(), sender, args);
+            this.storeEvent(prop.toString(), sender, args);
 
             // Forward the method call to the original `console` method
-            return property.apply(target, args);
+            return Reflect.apply(property, target, args) as unknown;
           };
         }
 
@@ -53,10 +50,10 @@ export class ConsoleProxy {
     window.console = consoleProxy;
 
     // Listen for uncaught exceptions
-    window.addEventListener("error", this.onWindowError.bind(this));
+    window.addEventListener("error", this.onWindowError);
     window.addEventListener(
       "unhandledrejection",
-      this.onWindowUnhandledRejection.bind(this),
+      this.onWindowUnhandledRejection,
     );
 
     return this;
@@ -65,13 +62,13 @@ export class ConsoleProxy {
   // Removing the console proxy object and the listener for uncaught errors
   public teardown(): void {
     window.console = WINDOW_CONSOLE;
-    window.removeEventListener("error", this.onWindowError.bind(this));
+    window.removeEventListener("error", this.onWindowError);
     window.removeEventListener(
       "unhandledrejection",
-      this.onWindowUnhandledRejection.bind(this),
+      this.onWindowUnhandledRejection,
     );
 
-    console.info(prefixMsg("Proxy removed"));
+    WINDOW_CONSOLE.info(prefixMsg("Proxy removed"));
   }
 
   /**
@@ -85,13 +82,13 @@ export class ConsoleProxy {
   public storeEvent(
     level: string,
     sender: string | undefined,
-    ...args: any[]
+    ...args: unknown[]
   ): void {
     this.queue.push({
       timestamp: new Date(),
       level,
       sender,
-      args: args.map(this.rewriteForLogging.bind(this)),
+      args: args.map((arg) => this.rewriteForLogging(arg)),
     });
   }
 
@@ -99,7 +96,7 @@ export class ConsoleProxy {
    * Tries to prevent "max. call stack exceeded" errors by replacing certain
    * objects with a string representation.
    */
-  private rewriteForLogging(value: any): any {
+  private rewriteForLogging(value: unknown): unknown {
     if (value instanceof TFolder) {
       return `[TFolder] ${value.path}`;
     } else if (value instanceof TFile) {
@@ -129,8 +126,9 @@ export class ConsoleProxy {
    *
    * @param event - The error event object.
    */
-  private onWindowError(event: ErrorEvent): void {
-    const { message, colno, lineno, filename, error } = event;
+  private onWindowError = (event: ErrorEvent): void => {
+    const { message, colno, lineno, filename } = event;
+    const error = event.error as Error;
 
     // Add a `fatal`-level log event to the queue
     this.storeEvent(
@@ -140,7 +138,7 @@ export class ConsoleProxy {
       message,
       error.stack || "(stack trace unavailable)",
     );
-  }
+  };
 
   /**
    * Event handler for unhandled exceptions happening in promises. Adds a
@@ -148,7 +146,7 @@ export class ConsoleProxy {
    *
    * @param event - The error event object.
    */
-  private onWindowUnhandledRejection(event: UnhandledRejectionEvent): void {
+  private onWindowUnhandledRejection = (event: UnhandledRejectionEvent): void => {
     const error = event.reason;
 
     if (typeof error === "string") {
@@ -159,18 +157,23 @@ export class ConsoleProxy {
         error,
       );
     } else {
-      const { colno, lineno, filename } = error;
+      const { colno, lineno, filename, stack } = error as {
+        colno?: number;
+        lineno?: number;
+        filename?: string;
+        stack?: string;
+      };
       const sender = (filename && lineno && colno)
         ? `${filename}:${lineno}:${colno}`
-        : error.stack?.match(/at eval \((.+?)\)/)?.[1] ?? "(undetermined)";
+        : stack?.match(/at eval \((.+?)\)/)?.[1] ?? "(undetermined)";
 
       // Add a `fatal`-level log event to the queue
       this.storeEvent(
         "fatal",
         sender,
         "Uncaught (in promise)",
-        error.stack || "(stack trace unavailable)",
+        stack || "(stack trace unavailable)",
       );
     }
-  }
+  };
 }
